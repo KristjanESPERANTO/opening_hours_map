@@ -1,6 +1,6 @@
 {
 	"data_format": 1,
-	"data_url": "https://raw.githubusercontent.com/opening-hours/opening_hours_map/master/taginfo.json",
+	"data_url": "https://raw.githubusercontent.com/opening-hours/opening_hours_map/HEAD/taginfo.json",
 	"project": {
 		"name": "opening_hours map",
 		"description": "opening_hours map",

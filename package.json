@@ -2,12 +2,19 @@
   "name": "opening-hours-map",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Interactive map showing opening_hours tags from OpenStreetMap",
   "scripts": {
-    "test": "npm run test:html",
-    "test:html": "html-validate '*.html' 'evaluation_tool/*.html'"
+    "test": "npm run test:html && npm run lint",
+    "test:html": "html-validate '*.html' 'evaluation_tool/*.html'",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@stylistic/eslint-plugin": "^5.7.0",
+    "eslint": "^9.39.2",
+    "globals": "^17.0.0",
     "html-validate": "^10.6.0"
   },
   "repository": {

@@ -9,11 +9,8 @@ list:
 ## }}}
 
 .PHONY: check
-check: check-html
-
-.PHONY: check-html
-check-html:
-	npm run test:html
+check:
+	npm run test
 
 ## Make this project ready to be served by a webserver.
 .PHONY: ready-for-hosting

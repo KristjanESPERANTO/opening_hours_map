@@ -28,7 +28,7 @@ OpenLayers.Control.LoadStatus=OpenLayers.Class(OpenLayers.Control,{
         return this.div;
     },
 
-    setMap: function (map) {
+    setMap: function () {
         OpenLayers.Control.prototype.setMap.apply(this,arguments);
         for (var layer in this.map.layers) {
             this.attachLayer (layer);

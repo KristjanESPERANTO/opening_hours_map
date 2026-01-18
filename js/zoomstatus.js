@@ -81,7 +81,7 @@ OpenLayers.Control.ZoomStatus=OpenLayers.Class(OpenLayers.Control,{
     //    get next info
     //---------------------------------------------------------
 
-    getNextZoomStep: function (current) {
+    getNextZoomStep: function () {
         if (!this.map) { return null; }
         var steps=0;
         for (var i in this.map.layers) {

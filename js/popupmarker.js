@@ -107,7 +107,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     //    Init
     //----------------------------------------------------------------------
 
-    initialize: function(name, options) {
+    initialize: function() {
 
         OpenLayers.Layer.Markers.prototype.initialize.apply(this,arguments);
 
@@ -118,7 +118,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         this.loadingUrl        = null;
         this.nextId        = 0;
 
-        if (this.opacity ) { this.setOpacity(opacity); }
+        if (this.opacity ) { this.setOpacity(this.opacity); }
         if (this.minZoom ) { this.zoomSteps = 1<<this.minZoom; }
 
         if (!window.callbackCounter) { window.callbackCounter = 0; }
@@ -485,7 +485,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         return null;
     },
 
-    createMarker: function (data, isnew) {
+    createMarker: function (data) {
 
         if (!data) { return null; }
         if (this.filter && !this.filter(data)) { return null; }
@@ -545,8 +545,6 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             marker.icon.imageDiv.onmouseover = function() {
 
-                var replacementIcon = null;
-
                 for (var i in groupMemberIds) {
 
                     var memberId = groupMemberIds[i];
@@ -562,13 +560,18 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                     //    HACK specifically for histmap
                     //---------------------------------
 
-                    memberMarker.icon.url = marker.layer.createIconUrlFromParams(
-                        iconParamsFromData(marker.data, false),
-                        hasImageFromData(memberMarker.data));
+                    if (typeof iconParamsFromData !== 'undefined' && typeof hasImageFromData !== 'undefined') {
 
-                    memberMarker.icon.size = new OpenLayers.Size(
-                        marker.layer.undefinedMarkerIconScale*marker.icon.size.w,
-                        marker.layer.undefinedMarkerIconScale*marker.icon.size.h);
+                        memberMarker.icon.url = marker.layer.createIconUrlFromParams(
+                            // eslint-disable-next-line no-undef
+                            iconParamsFromData(marker.data, false),
+                            // eslint-disable-next-line no-undef
+                            hasImageFromData(memberMarker.data));
+
+                        memberMarker.icon.size = new OpenLayers.Size(
+                            marker.layer.undefinedMarkerIconScale*marker.icon.size.w,
+                            marker.layer.undefinedMarkerIconScale*marker.icon.size.h);
+                    }
 
                     memberMarker.icon.offset = new OpenLayers.Pixel(
                         marker.layer.undefinedMarkerIconScale*marker.icon.offset.w,
@@ -778,7 +781,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         return false;
     },
 
-    markerMouseOut: function (ev) {
+    markerMouseOut: function () {
 
         if (!this.layer.currentMarker) {
             this.layer.destroyPopup();
@@ -873,7 +876,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             (cluster.length>=2 ? this.createHtmlFromList(cluster) : this.createHtmlFromData(marker.data)),
             marker.icon,
             true,
-            function (e) {this.layer.destroyPopup();}
+            function () {this.layer.destroyPopup();}
         );
 
         this.currentPopup.layer = this;
@@ -987,7 +990,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     //    Popup - edit
     //----------------------------------------------------------------------
 
-    createEditPopup: function (marker, isnew) {
+    createEditPopup: function (marker) {
 
         this.destroyPopup ();
 
@@ -1003,7 +1006,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             this.createForm (marker.data),
             marker.icon,
             true,
-            function (e) {this.layer.destroyPopup();}
+            function () {this.layer.destroyPopup();}
         );
 
         this.currentPopup.layer = this;
@@ -1353,7 +1356,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 if (name) {
                     object[name] = values[col];
                 } else {
-                    tagval=values[col].split('=');
+                    var tagval=values[col].split('=');
                     if (tagval.length >= 2 && tagval[0]) {
                         var tag = tagval.shift();
                         var val = tagval.join('=');
@@ -1372,7 +1375,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     //    Create Icon for marker
     //----------------------------------------------------------------------
 
-    createIconFromData: function (data) {
+    createIconFromData: function (data) { // eslint-disable-line no-unused-vars
 
         return this.icon ? this.icon.clone() : null;
     },
@@ -1411,7 +1414,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
 
         if (this.osmlinks) {
-            osmlinks = this.createOsmLinks(data);
+            var osmlinks = this.createOsmLinks(data);
             if (osmlinks) {
                 result.push ('<p>' + osmlinks + '</p>');
             }
@@ -1424,24 +1427,24 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     //    Editform
     //----------------------------------------------------------------------
 
-    createForm: function (data) {
+    createForm: function () {
 
         var result = [];
         result.push ('<form>');
         result.push ('<table>');
 
-        for (name in this.fieldTitles) {
+        for (var formName in this.fieldTitles) {
 
-            if (name=='id' || name=='lat' || name=='lon') {
+            if (formName=='id' || formName=='lat' || formName=='lon') {
                 continue;
             }
 
-            var hName = this.html (name);
-            var title = this.fieldTitles[name] || name;
-            var valueTitles = this.fieldValues[name];
+            var hName = this.html (formName);
+            var title = this.fieldTitles[formName] || formName;
+            var valueTitles = this.fieldValues[formName];
             var field;
 
-            switch (this.fieldTypes[name]) {
+            switch (this.fieldTypes[formName]) {
 
             case 'select':
                 var options = [];
@@ -1453,7 +1456,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 break;
 
             case 'radios':
-                choices = [];
+                var choices = [];
                 for (value in valueTitles) {
                     hTitle = this.html (valueTitles[value] || value);
                     choices.push ('<label><input type="radio" name="' + hName + '" value="' + this.html(value) + '"/>' + hTitle + '</label> ');
@@ -1462,20 +1465,20 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 break;
 
             case 'textarea':
-                field = '<textarea name="'+this.html(name)+'"/></textarea>';
+                field = '<textarea name="'+this.html(formName)+'"/></textarea>';
                 break;
 
             case 'checkbox':
                 hTitle = this.html (valueTitles && valueTitles['t'] || '');
-                field = '<input type="checkbox" name="'+this.html(name)+'" value="t"/>' + hTitle;
+                field = '<input type="checkbox" name="'+this.html(formName)+'" value="t"/>' + hTitle;
                 break;
 
             case 'password':
-                field = '<input type="password" name="'+this.html(name)+'"/>';
+                field = '<input type="password" name="'+this.html(formName)+'"/>';
                 break;
 
             default:
-                field = '<input name="'+this.html(name)+'"/>';
+                field = '<input name="'+this.html(formName)+'"/>';
                 break;
             }
 
@@ -1483,9 +1486,9 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
 
         result.push ('</table>');
-        for (name in this.fieldTypes) {
-            if (this.fieldTypes[name]=='hidden') {
-                result.push ('<input type="hidden" name="'+this.html(name)+'"/>');
+        for (var fieldName in this.fieldTypes) {
+            if (this.fieldTypes[fieldName]=='hidden') {
+                result.push ('<input type="hidden" name="'+this.html(fieldName)+'"/>');
             }
         }
         result.push ('<button type="submit">Speichern</button>');
@@ -1543,11 +1546,11 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
     },
 
-    checkData: function (data) {
+    checkData: function () {
         return 'checkData() missing.';
     },
 
-    checkEdit: function (data) {
+    checkEdit: function () {
         return true;
     },
 
@@ -1590,7 +1593,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 var interwiki = text.match (/^(File:.*\S)/);
 
                 if (interwiki) {
-                    html_interwiki = this.html (interwiki[1]);
+                    var html_interwiki = this.html (interwiki[1]);
                     return '<a target="_blank" href="http://www.wikipedia.org/wiki/' +
                         html_interwiki.replace(/\040/g,'_') + '">' +
                             html_interwiki + '</a>';
@@ -1617,20 +1620,20 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
 
         var list=(text+'').split (';');
-        var result=[];
+        var linkResult=[];
         for (var i=0; i<list.length;i++) {
             var value = this.html (OpenLayers.String.trim (list[i]));
             if (value.substr (0,7)=='http://' || value.substr (0,8)=='https://') {
-                result.push ('<a target="_blank" href="'+value+'">'+this.shrinkUrl(value)+'</a>');
+                linkResult.push ('<a target="_blank" href="'+value+'">'+this.shrinkUrl(value)+'</a>');
                 continue;
             }
             if (value.substr (0,4)=='www.') {
-                result.push ('<a target="_blank" href="http://'+value+'">'+value+'</a>');
+                linkResult.push ('<a target="_blank" href="http://'+value+'">'+value+'</a>');
                 continue;
             }
-            result.push (value);
+            linkResult.push (value);
         }
-        return result.join ('; ');
+        return linkResult.join ('; ');
     },
 
     //----------------------------------------------------------------------
@@ -1736,10 +1739,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    wikipedia = LANG : LEMMA
         //------------------------------------------------------
 
-        match = (data.wikipedia||'').match(/^([a-z]+):([^\/;]*[^\/;\s])([;\s].*)?$/);
+        var match = (data.wikipedia||'').match(/^([a-z]+):([^/;]*[^/;\s])([;\s].*)?$/);
         if (match) {
             return 'http://' + match[1] + '.wikipedia.org/wiki/' +
-                match[2].replace(/\040/g, '_');
+                match[2].replace(/ /g, '_');
         }
 
         //------------------------------------------------------
@@ -1747,7 +1750,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    wikipedia = LANG.wikipedia.org/wiki/LEMMA
         //------------------------------------------------------
 
-        match = (data.wikipedia||'').match(/^(https?:\/\/)?(\w+\.wikipedia\.org\/wiki\/[^\/;]*[^\/;\s])([;\s].*)?$/);
+        match = (data.wikipedia||'').match(/^(https?:\/\/)?(\w+\.wikipedia\.org\/wiki\/[^/;]*[^/;\s])([;\s].*)?$/);
         if (match) { return 'http://' + match[2]; }
 
         //------------------------------------------------------
@@ -1764,10 +1767,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             //    wikipedia : LANG = LEMMA
             //----------------------------------------------
 
-            valueMatch = data[tag].match(/^([^\/;]*[^\/;\s])\s*$/);
+            let valueMatch = data[tag].match(/^([^/;]*[^/;\s])\s*$/);
             if (valueMatch) {
                 return 'http://' + tagMatch[1] + '.wikipedia.org/wiki/' +
-                    valueMatch[1].replace(/\040/g, '_');
+                    valueMatch[1].replace(/ /g, '_');
             }
 
             //----------------------------------------------
@@ -1775,7 +1778,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             //    wikipedia : LANG = LANG.wikipedia.org/wiki/LEMMA
             //----------------------------------------------
 
-            valueMatch = data[tag].match(/^(https?:\/\/)?(\w+\.wikipedia\.org\/wiki\/[^;\s\/]+)([\s;].*)?$/);
+            valueMatch = data[tag].match(/^(https?:\/\/)?(\w+\.wikipedia\.org\/wiki\/[^;\s/]+)([\s;].*)?$/);
             if (valueMatch) {
                 return 'http://' + valueMatch[2];
             }
@@ -1898,7 +1901,6 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 if (isNaN(value)) { continue; }
                 query.push (field+"."+op+"="+value);
                 continue;
-                break;
 
             case "seq":
             case "sge":
@@ -1913,7 +1915,6 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             case "sregex":
                 query.push (field+"."+op+"="+val);
                 continue;
-                break;
 
             case "isin":
             case "isinall":
@@ -1922,7 +1923,6 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 if (!sets[op][field]) { sets[op][field]=[]; }
                 sets[op][field].push(fov[2]?fov[2]:val);
                 continue;
-                break;
 
             default:
                 break;

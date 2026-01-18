@@ -1,5 +1,6 @@
+/* global OpenLayers */
+
 var repo_url = 'https://github.com/opening-hours/opening_hours_map';
-var html_url = 'http://openingh.openstreetmap.de/';
 var wiki_url = 'https://wiki.openstreetmap.org/wiki/Key:opening_hours';
 var evaluation_tool_url = 'evaluation_tool/';
 
@@ -22,11 +23,6 @@ var related_tags = [
 if (!document.onLoadFunctions) {
     document.onLoadFunctions = new Array();
     window.onload = function () { for (var i=0; document.onLoadFunctions.length>i;i++) document.onLoadFunctions[i](); }
-}
-
-
-function Evaluate(number, reset, value) {
-    window.open(evaluation_tool_url + '?EXP='+encodeURIComponent(value), '_blank');
 }
 
 // From https://github.com/rurseekatze/OpenLinkMap/blob/master/js/small.js
@@ -420,7 +416,7 @@ function createMap() {
         lastLon: undefined,
         poi_data: undefined,
 
-        createMarkerFromData: function(elements) {
+        createMarkerFromData: function() {
         },
 
         /* FIXME */
@@ -454,19 +450,19 @@ function createMap() {
 
             for (var i in elements) {
                 var element = elements[i];
-                var data = element.tags;
-                if (!data) data = {};
+                var elementData = element.tags;
+                if (!elementData) elementData = {};
                 if (element.id) {
-                    data.id = (element.type ? element.type.substr(0,1) : '') + element.id;
-                    data._id = element.id;
+                    elementData.id = (element.type ? element.type.substr(0,1) : '') + element.id;
+                    elementData._id = element.id;
                 }
-                data._type = element.type;
-                if (data._type == 'way' || data._type == 'relation') {
-                    data.lat = element.center.lat;
-                    data.lon = element.center.lon;
+                elementData._type = element.type;
+                if (elementData._type == 'way' || elementData._type == 'relation') {
+                    elementData.lat = element.center.lat;
+                    elementData.lon = element.center.lon;
                 } else {
-                    data.lat = element.lat;
-                    data.lon = element.lon;
+                    elementData.lat = element.lat;
+                    elementData.lon = element.lon;
                 }
                 this.createMarker (data);
             }
@@ -497,37 +493,30 @@ function createMap() {
             switch (permalinkParams.filter) {
                 case 'error':
                     return this.evaluateOH(data) == 'error' || data._oh_object.getWarnings().length > 0;
-                    break;
                 case 'errorOnly':
                     return this.evaluateOH(data) == 'error';
-                    break;
                 case 'warnOnly':
                     return this.evaluateOH(data) != 'error' && data._oh_object.getWarnings().length > 0;
-                    break;
                 case 'open':
                     if (this.evaluateOH(data) == 'error')
                         return false;
                     else
                         return data._it_object.getState();
-                    break;
                 case 'unknown':
                     if (this.evaluateOH(data) == 'error')
                         return false;
                     else
                         return data._it_object.getUnknown();
-                    break;
                 case 'closed':
                     if (this.evaluateOH(data) == 'error')
                         return false;
                     else
                         return !data._it_object.getState() && !data._it_object.getUnknown();
-                    break;
                 case 'openOrUnknown':
                     if (this.evaluateOH(data) == 'error')
                         return false;
                     else
                         return data._it_object.getState() || data._it_object.getUnknown();
-                    break;
                 case 'none':
                 default:
                     return true;

@@ -13,7 +13,7 @@ check: check-html
 
 .PHONY: check-html
 check-html:
-	html5validator --root . --blacklist js opening_hours.js --ignore-re 'Start tag seen without seeing a doctype first'
+	npm run test:html
 
 ## Make this project ready to be served by a webserver.
 .PHONY: ready-for-hosting

@@ -1,0 +1,18 @@
+{
+  "name": "opening-hours-map",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive map showing opening_hours tags from OpenStreetMap",
+  "scripts": {
+    "test": "npm run test:html",
+    "test:html": "html-validate 'index.html'"
+  },
+  "devDependencies": {
+    "html-validate": "^10.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opening-hours/opening_hours_map.git"
+  },
+  "license": "GPL-3.0-or-later"
+}

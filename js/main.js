@@ -1,4 +1,7 @@
 /* global OpenLayers */
+import { mapInstance } from './map-ol10.js';
+import { createPOILayer } from './poi-layer-ol10.js';
+import { createPermalink } from './permalink-ol10.js';
 
 var repo_url = 'https://github.com/opening-hours/opening_hours_map';
 var wiki_url = 'https://wiki.openstreetmap.org/wiki/Key:opening_hours';
@@ -26,7 +29,7 @@ if (!document.onLoadFunctions) {
 }
 
 // From https://github.com/rurseekatze/OpenLinkMap/blob/master/js/small.js
-function editPopupContent(content, lat, lon, type, id, oh_value) {
+window.editPopupContent = function editPopupContent(content, lat, lon, type, id, oh_value) {
     // add some links to the bottom of a popup
     content += '<br />';
     content += '<a href="https://www.openstreetmap.org/edit?editor=id&'+type+'='+id+'" target="_blank">iD</a>&nbsp;&nbsp;';
@@ -37,15 +40,18 @@ function editPopupContent(content, lat, lon, type, id, oh_value) {
         + '&nbsp;&nbsp;<a href="' + evaluation_tool_url + '?EXP='
         + encodeURIComponent(oh_value) + '&lat=' + lat + '&lon=' + lon + '" target="_blank">' + i18next.t('texts.evaluation tool') + '</a>';
     return content;
-}
+};
 
 function createMap() {
 
-    var map;
-    var poi_layer;
-    var nominatim_data_global = {};
-    var permalinkParams = {};
-    var permalinkObject;
+    let map;
+    let poi_layer;
+    let nominatim_data_global = {};
+    let permalinkParams = {};
+    let permalinkObject;
+
+    // Make nominatim_data_global globally accessible
+    window.nominatim_data_global = nominatim_data_global;
 
     window.useUserKey = function (key) {
         if (related_tags.indexOf(key) === -1) { /* Add the new key to related_tags. */
@@ -64,17 +70,21 @@ function createMap() {
         permalinkObject.updateLink();
     };
 
-    permalinkParams.filter = OpenLayers.Util.getParameters().filter || 'none';
-    document.getElementById('filter_form_' + permalinkParams.filter).checked = true;
+    // OpenLayers 10: Use native URLSearchParams instead of OpenLayers.Util.getParameters()
+    const urlParams = new URLSearchParams(window.location.search);
+    permalinkParams.filter = urlParams.get('filter') || 'none';
 
     window.applyNewFilter = function (myRadio) {
         permalinkParams.filter = myRadio.value;
-        poi_layer.redrawPOIs();
+        poi_layer.setFilter(myRadio.value);
         permalinkObject.updateLink();
     };
 
     var OHMode = 0;
     var OSM_tags = []; // keys for the values which should be evaluated.
+
+    // Make OSM_tags globally accessible for POI layer
+    window.OSM_tags = OSM_tags;
 
     var prmarr = window.location.search.replace( "?", "" ).split("&");
     var params = {};
@@ -98,7 +108,36 @@ function createMap() {
 
     useUserKey(OSM_tags[0]);
 
-    /* {{{ OpenLayers */
+    /* {{{ OpenLayers 10 Map */
+    //----------------------------------------------------------------------------
+    //    Use the map instance from map-ol10.js
+    //----------------------------------------------------------------------------
+    map = mapInstance;
+
+    // OpenLayers 10: Create permalink handler
+    permalinkObject = createPermalink(map, permalinkParams);
+
+    // OpenLayers 10: Create POI layer
+    poi_layer = createPOILayer(map, {
+        minZoom: 11,
+        clusterLimit: 50,
+        reftime: new Date()
+    });
+
+    // Set OSM tags for the layer
+    poi_layer.keyValues = OSM_tags;
+
+    // Make poi_layer and map globally accessible
+    window.poi_layer = poi_layer;
+    window.map = map;
+    window.permalinkObject = permalinkObject;
+    window.permalinkParams = permalinkParams;
+
+    // TODO: OpenLayers 10 migration - following code needs to be rewritten
+    // Setting USE_OL2 to false to skip legacy OpenLayers 2 code during migration
+    var USE_OL2 = false;
+    if (USE_OL2) {
+    // Legacy OpenLayers 2 code - to be migrated:
     //----------------------------------------------------------------------------
     //    Karte - der Name ('map') muss mit der id des <div> uebereinstimmen.
     //----------------------------------------------------------------------------
@@ -110,6 +149,7 @@ function createMap() {
     map.displayProjection = new OpenLayers.Projection ('EPSG:4326');
 
     /* {{{ Patch updateLink function */
+    /*
     OpenLayers.Control.Permalink.prototype.updateLink = function() {
         permalinkObject = this;
         var href=this.base;
@@ -204,7 +244,8 @@ function createMap() {
                     var res = [];
                     var list=data[tag].split (';');
                     for (var i=0; i<list.length;i++) {
-                        var ele=this.html(OpenLayers.String.trim(list[i]));
+                        // OpenLayers 10: Use native trim() instead of OpenLayers.String.trim()
+                        var ele=this.html(list[i].trim());
                         res.push ('<a target="_blank" href="' + ele+'">'+ele+'</a>');
                     }
                     val=res.join('; ');
@@ -214,6 +255,7 @@ function createMap() {
 
             if (rows.length>=1) text += '<table>'+rows.join('\n')+'</table>\n';
 
+            // eslint-disable-next-line no-undef
             return editPopupContent(text, data.lat, data.lon, data._type, data._id, data._oh_value);
         },
 
@@ -343,13 +385,13 @@ function createMap() {
                 .transform(this.map.getProjectionObject(), this.map.displayProjection);
 
             if (Object.keys(nominatim_data_global).length === 0) {
-                var nominatim_query = OpenLayers.String.format('&lat=${top}&lon=${left}', bbox);
+                // OpenLayers 10: Use template literals instead of OpenLayers.String.format()
+                var nominatim_query = `&lat=${bbox.top}&lon=${bbox.left}`;
                 this.updateNominatimData(nominatim_query);
             }
 
-            var bboxQuery = OpenLayers.String.format (
-                '[bbox:${bottom},${left},${top},${right}]',
-                bbox);
+            // OpenLayers 10: Use template literals instead of OpenLayers.String.format()
+            var bboxQuery = `[bbox:${bbox.bottom},${bbox.left},${bbox.top},${bbox.right}]`;
 
             var components = [];
             for (var i in keyvalues) {
@@ -535,13 +577,15 @@ function createMap() {
                 transform(new OpenLayers.Projection('EPSG:4326'), map.getProjectionObject())
         );
     }
+    } // end if (USE_OL2)
     /* }}} */
 
     document.getElementById('tag_selector_input').onchange = keyChanged;
 }
 
 function initializeUI() {
-    document.title = i18next.t('texts.heading map');
+    try {
+        document.title = i18next.t('texts.heading map');
 
     // Set HTML lang attribute based on current language
     document.documentElement.setAttribute('lang', i18next.language);
@@ -620,7 +664,21 @@ function initializeUI() {
     }
     filterHTML += '</form></p>';
     document.getElementById('filter_selector').innerHTML = filterHTML;
-    document.getElementById('filter_form_none').checked = true;
+
+    // Set filter from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const filterParam = urlParams.get('filter') || 'none';
+    const filterElement = document.getElementById('filter_form_' + filterParam);
+    if (filterElement) {
+        filterElement.checked = true;
+    } else {
+        document.getElementById('filter_form_none').checked = true;
+    }
+
+    // Apply filter to POI layer if it exists
+    if (window.poi_layer) {
+        window.poi_layer.setFilter(filterParam);
+    }
 
     // Footer
     var footer = '<p>';
@@ -632,6 +690,10 @@ function initializeUI() {
     footer += i18next.t('texts.this website', { url: repo_url, hoster: 'GitHub' });
     footer += '</p>';
     document.getElementById('footer').innerHTML = footer;
+    } catch (error) {
+        console.error('Error in initializeUI:', error);
+        throw error;
+    }
 }
 
 // Wait for both DOM and modules to be ready

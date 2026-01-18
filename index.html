@@ -3,17 +3,36 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="referrer" content="no-referrer">
+        <meta name="referrer" content="origin-when-cross-origin">
         <title>Map with layer for the tag opening_hours based on OpenStreetMap</title>
         <link rel="icon" type="image/svg+xml" href="opening_hours.js/site/img/favicon.svg">
         <meta name="description" content="Interactive map showing opening_hours tags from OpenStreetMap with visual evaluation.">
+        <!-- Import Map for OpenLayers 10 and dependencies -->
+        <script type="importmap">
+        {
+            "imports": {
+                "ol/": "./node_modules/ol/",
+                "rbush": "./node_modules/rbush/index.js",
+                "geotiff": "./node_modules/geotiff/dist-module/geotiff.js",
+                "quickselect": "./node_modules/quickselect/index.js"
+            }
+        }
+        </script>
+        <!-- OpenLayers 10 CSS -->
+        <link rel="stylesheet" href="node_modules/ol/ol.css">
+        <link rel="stylesheet" href="css/ol10.css">
+        <link rel="stylesheet" href="css/ol-popup.css">
+        <!-- Legacy scripts - to be migrated -->
+        <!--
         <script src="js/OpenLayers-2.13.1/OpenLayers.js"></script>
         <script src="js/OpenStreetMap.js"></script>
         <script src="js/popupmarker.js"></script>
         <script src="js/loadstatus.js"></script>
         <script src="js/zoomstatus.js"></script>
+        -->
         <script src="opening_hours.js/build/opening_hours+deps.min.js"></script>
         <script type="module" src="js/init-modules.js"></script>
+        <script type="module" src="js/map-ol10.js"></script>
         <script type="module" src="js/main.js"></script>
         <link rel="stylesheet" href="opening_hours.js/site/css/table.css">
         <link rel="stylesheet" href="css/default.css">

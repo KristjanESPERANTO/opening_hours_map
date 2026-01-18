@@ -1,3 +1,5 @@
+# OpenLayers is now installed via npm (ol@10.7.0)
+# Legacy version kept for reference
 OpenLayersVersion := 2.13.1
 
 ## help {{{
@@ -25,13 +27,17 @@ taginfo.json: ./opening_hours.js/scripts/related_tags.txt ./opening_hours.js/scr
 	./opening_hours.js/scripts/gen_taginfo_json.js --key-file="$<" --template-file=taginfo_template.json > "$@"
 
 .PHONY: dependencies-get
-dependencies-get: js/OpenLayers-$(OpenLayersVersion)/OpenLayers.js
-	git verify-commit HEAD || (echo "The author is signing all recent git commits. If the command failed because you don’t have ypid’s key in your keyring, you can import it from a keyserver and verify it’s authenticity." && exit 1)
+dependencies-get: node_modules
+	git verify-commit HEAD || (echo "The author is signing all recent git commits. If the command failed because you don't have ypid's key in your keyring, you can import it from a keyserver and verify it's authenticity." && exit 1)
 	git submodule update --init --recursive
 
-js/OpenLayers-$(OpenLayersVersion)/OpenLayers.js:
-	-wget --no-clobber -O js/OpenLayers-$(OpenLayersVersion).tar.gz https://github.com/openlayers/ol2/releases/download/release-$(OpenLayersVersion)/OpenLayers-$(OpenLayersVersion).tar.gz || rm -f js/OpenLayers-$(OpenLayersVersion).tar.gz
-	tar -xzf js/OpenLayers-$(OpenLayersVersion).tar.gz -C js/
+node_modules:
+	npm install
+
+# Legacy OpenLayers 2 download (no longer used)
+# js/OpenLayers-$(OpenLayersVersion)/OpenLayers.js:
+# 	-wget --no-clobber -O js/OpenLayers-$(OpenLayersVersion).tar.gz https://github.com/openlayers/ol2/releases/download/release-$(OpenLayersVersion)/OpenLayers-$(OpenLayersVersion).tar.gz || rm -f js/OpenLayers-$(OpenLayersVersion).tar.gz
+# 	tar -xzf js/OpenLayers-$(OpenLayersVersion).tar.gz -C js/
 
 .PHONY: deploy-on-all-servers
 deploy-on-all-servers: deploy-on-openingh.openstreetmap.de deploy-on-ypid.de
@@ -39,10 +45,10 @@ deploy-on-all-servers: deploy-on-openingh.openstreetmap.de deploy-on-ypid.de
 .PHONY: deploy-on-openingh.openstreetmap.de
 deploy-on-openingh.openstreetmap.de: opening_hours+deps.min.js
 	rsync  --archive * everest.openstreetmap.de:~/www -v
-
-# Custom deployment method which allows me to fully isolate the development and build environment from the server.
-# Copy tar because qvm-copy blocks relative symlinks.
-# Ref: https://github.com/QubesOS/qubes-issues/issues/9667
+ypid.de
+deploy-on-ypid.de: opening_hours+deps.min.js
+	rm -f "/tmp/opening_hours_map.tar"
+	/bin/tar --exclude-vcs --exclude='./node_modules' --exclude='./js/*.tar.gz' --exclude='./js/OpenLayers-$(OpenLayersVersion)
 .PHONY: deploy-on-openingh.openstreetmap.de
 deploy-on-ypid.de: opening_hours+deps.min.js
 	rm -f "/tmp/opening_hours_map.tar"

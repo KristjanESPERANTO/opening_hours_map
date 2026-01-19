@@ -1,119 +1,48 @@
-<html>
-    <head><!-- {{{ -->
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="referrer" content="no-referrer" />
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer">
         <title>Map with layer for the tag opening_hours based on OpenStreetMap</title>
-        <link rel="icon" type="image/png" href="opening_hours.js/site/img/favicon.png" />
-        <meta name="description" content="Auswertung des Tags opening_hours auf einer Karte von OpenStreetMap" />
-        <script type="text/javascript" src="js/OpenLayers-2.13.1/OpenLayers.js"></script>
-        <script type="text/javascript" src="js/OpenStreetMap.js"></script>
-        <script type="text/javascript" src="js/popupmarker.js"></script>
-        <script type="text/javascript" src="js/loadstatus.js"></script>
-        <script type="text/javascript" src="js/zoomstatus.js"></script>
-        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha384-rY/jv8mMhqDabXSo+UCggqKtdmBfd3qC2/KvyTDNQ6PcUJXaxK1tMepoQda4g5vB" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="opening_hours.js/build/opening_hours+deps.min.js"></script>
-        <script type="text/javascript" src="opening_hours.js/node_modules/i18next/i18next.min.js"></script>
-        <script src="opening_hours.js/node_modules/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.min.js"></script>
-        <script type="text/javascript" src="opening_hours.js/site/js/i18n-resources.js"></script>
-        <script type="text/javascript" src="opening_hours.js/site/js/opening_hours_table.js"></script>
-        <script type="text/javascript" src="opening_hours.js/site/js/helpers.js"></script>
-        <script type="text/javascript" src="opening_hours.js/site/js/countryToLanguageMapping.js"></script>
-        <script type="text/javascript" src="js/main.js"></script>
-        <link rel="stylesheet" href="opening_hours.js/site/css/table.css"/>
-        <link rel="stylesheet" href="css/default.css"/>
-        <script type="text/javascript">
-            if (document.title !== i18next.t('texts.heading map')) {
-                document.title = i18next.t('texts.heading map');
-            }
-        </script>
-    </head> <!-- }}} -->
-    <body><!-- {{{ -->
-        <noscript>You don‘t have JavaScript enabled and that is a good thing but this tool makes heavy use of JavaScript so you need to enable it in order to use this tool. If you don’t trust the code that is going to be executed that is good as well. I encourage you to read all the source code on <a href="https://github.com/opening-hours/opening_hours.js">Github</a>. Also note that every commit and all releases are GPG signed. You might want to check this out as well :) Stay safe.</noscript>
+        <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+        <meta name="description" content="Interactive map showing opening_hours tags from OpenStreetMap with visual evaluation.">
+        <script src="js/OpenLayers-2.13.1/OpenLayers.js"></script>
+        <script src="js/OpenStreetMap.js"></script>
+        <script src="js/popupmarker.js"></script>
+        <script src="js/loadstatus.js"></script>
+        <script src="js/zoomstatus.js"></script>
+        <script src="opening_hours.js/build/opening_hours+deps.min.js"></script>
+        <script type="module" src="js/init-modules.js"></script>
+        <script type="module" src="js/main.js"></script>
+        <link rel="stylesheet" href="opening_hours.js/site/css/table.css">
+        <link rel="stylesheet" href="css/default.css">
+    </head>
+    <body>
+        <noscript>You don't have JavaScript enabled and that is a good thing but this tool makes heavy use of JavaScript so you need to enable it in order to use this tool. If you don't trust the code that is going to be executed that is good as well. I encourage you to read all the source code on <a href="https://github.com/opening-hours/opening_hours.js">Github</a>. Also note that every commit and all releases are GPG signed. You might want to check this out as well :) Stay safe.</noscript>
 
         <div id="map"></div>
 
-        <script type="text/javascript">
-            document.write('<h1>' + i18next.t('texts.heading map') + '</h1>');
-            document.write(getUserSelectTranslateHTMLCode());
+        <header id="header" class="content-section"></header>
 
-            function submitenter(myfield,e) {
-                var keycode;
-                if (window.event) {
-                    keycode = window.event.keyCode;
-                }
-                else if (e) {
-                    keycode = e.which;
-                }
-                else {
-                    return true;
-                }
+        <main>
+            <section id="tag_selector" class="content-section">
+                <label id="tag_selector_label" for="tag_selector_input" class="visually-hidden">Tag Selector</label>
+                <select id="tag_selector_input" name="tag_selector_input"></select>
+                <form id="userKey">
+                    <label for="key" class="visually-hidden">Key input</label>
+                    <input type="text" id="key" name="key">
+                </form>
+            </section>
 
-                if (keycode == 13) {
-                    useUserKey(document.getElementById(myfield.id).value);
-                    keyChanged();
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        </script>
+            <section class="content-section">
+                <p id="map_description"></p>
+            </section>
 
-        <div id="tag_selector">
-            <script type="text/javascript">
-                document.write('<strong>' + i18next.t('texts.config POIs') + '</strong>:');
-            </script>
-            <select id="tag_selector_input" name="tag_selector_input"></select>
-            <form id="userKey" action="#">
-            <input id="key" style="width:20%" name="key" onKeyPress="return submitenter(this,event)" />
-            </form>
-            <script type="text/javascript">
-                var select = document.getElementById('tag_selector_input');
-                for (var tag_ind = 0; tag_ind < related_tags.length; tag_ind++) {
-                    select.options[select.options.length] = new Option(related_tags[tag_ind], select.options.length);
-                }
-            </script>
-        </div>
+            <section id="filter_selector" class="content-section"></section>
+        </main>
 
-        <p>
-        <script type="text/javascript">
-            document.write(i18next.t('texts.map is showing', { wikiUrl: wiki_url }));
-            document.write('<ul>');
-            document.write('<li>' + i18next.t('words.green')  + ': ' + i18next.t('texts.open now') + '</li>');
-            document.write('<li>' + i18next.t('words.yellow') + ': ' + i18next.t('texts.unknown now') + '</li>');
-            document.write('<li>' + i18next.t('words.red')    + ': ' + i18next.t('texts.closed now') + '</li>');
-            document.write('<li>' + i18next.t('words.violet')    + ': ' + i18next.t('texts.error') + '</li>');
-            document.write('</ul>');
-            document.write(i18next.t('texts.warning', { sign: '<q>W</q>' }));
-        </script>
-        </p>
+        <footer id="footer" class="content-section"></footer>
 
-        <div id="filter_selector"><p>
-        <script type="text/javascript">
-            document.write(i18next.t('texts.map filter'));
-            document.write('<form name="filter_form">');
-            var showFilterOptions = ['none', 'error', 'warnOnly', 'errorOnly', 'open', 'unknown', 'closed', 'openOrUnknown'];
-            for (var i = 0; i < showFilterOptions.length; i++) {
-                var filter_id = showFilterOptions[i];
-                document.write('<label><input type="radio" name="filter"'
-                        + ' value="' + filter_id + '"'
-                        + ' id="filter_form_' + filter_id + '"'
-                        + ' onclick="applyNewFilter(this)">' + i18next.t('texts.filter.' + filter_id) + '</input></label><br>');
-            }
-            document.write('</form>');
-            document.getElementById('filter_form_none').checked = true;
-        </script>
-        </p></div>
-
-        <script type="text/javascript">
-            document.write('</p><p>');
-            document.write(i18next.t('texts.data source', {
-                APIaTag:      '<a href="https://overpass-api.de/">Overpass API</a>',
-                OSMaTag:      '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>',
-                OSMStartaTag: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
-                }) + '<br />');
-            document.write(i18next.t('texts.this website', { url: repo_url, hoster: 'GitHub' }));
-            document.write('</p>');
-        </script>
-
-    </body><!-- }}} -->
+    </body>
 </html>

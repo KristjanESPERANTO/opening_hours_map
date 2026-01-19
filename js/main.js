@@ -142,7 +142,7 @@ function createMap() {
 
     /* {{{ Base layers */
     map.addLayer(new OpenLayers.Layer.OSM.Mapnik('Mapnik'));
-    map.addLayer(new OpenLayers.Layer.OSM.CycleMap('CycleMap'));
+    map.addLayer(new OpenLayers.Layer.OSM.CyclOSM('CyclOSM'));
     /* }}} */
 
     /* {{{ opening_hours layer */
@@ -192,7 +192,7 @@ function createMap() {
                     text += '<br/>Warnings: <div class="v">'+warnings.join('<br/>\n')+'</div>';
 
                 data._it_object.setDate(this.reftime);
-                text += OpeningHoursTable.drawTableAndComments(data._oh_object, data._it_object, encodeURIComponent(data._oh_value));
+                text += OpeningHoursTable.drawTableAndComments(data._oh_object, data._it_object, this.reftime);
             }
 
             var rows=[];
@@ -203,7 +203,7 @@ function createMap() {
                 case '_oh_value': case '_oh_state': case '_oh_object': case '_it_object':
                     continue;
                 }
-                val=this.html(data[tag]);
+                var val=this.html(data[tag]);
                 if (/^https?:\/\//.test(val)) {
                     var res = [];
                     var list=data[tag].split (';');
@@ -299,15 +299,40 @@ function createMap() {
             var url = 'https://overpass-api.de/api/interpreter?&data=' + encodeURIComponent(xml);
 
             var self = this;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);      // true makes this call asynchronous
-            xhr.onreadystatechange = function () {    // need eventhandler since our call is async
-                if ( xhr.readyState == 4 && xhr.status == 200 ) {  // check for success
-                    self.poi_data = JSON.parse(xhr.responseText);
-                    self.redrawPOIs();
-                }
-            };
-            xhr.send(null);
+
+            // AbortController for timeout handling
+            var controller = new AbortController();
+            var timeoutId = setTimeout(function() {
+                controller.abort();
+            }, 30000); // 30 second timeout
+
+            fetch(url, { signal: controller.signal })
+                .then(function(response) {
+                    clearTimeout(timeoutId);
+                    if (!response.ok) {
+                        if (response.status == 504 || response.status == 429) {
+                            console.warn('Overpass API timeout or rate limit (status ' + response.status + ')');
+                        } else {
+                            console.error('Overpass API request failed with status:', response.status);
+                        }
+                        return null;
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (data) {
+                        self.poi_data = data;
+                        self.redrawPOIs();
+                    }
+                })
+                .catch(function(error) {
+                    clearTimeout(timeoutId);
+                    if (error.name === 'AbortError') {
+                        console.warn('Overpass API request timed out');
+                    } else {
+                        console.error('Overpass API request failed:', error);
+                    }
+                });
         },
 
         redrawPOIs: function() {
@@ -321,7 +346,7 @@ function createMap() {
             var bbox = this.map.getExtent()
                 .transform(this.map.getProjectionObject(), this.map.displayProjection);
 
-            if ($.isEmptyObject(nominatim_data_global)) {
+            if (Object.keys(nominatim_data_global).length === 0) {
                 var nominatim_query = OpenLayers.String.format('&lat=${top}&lon=${left}', bbox);
                 this.updateNominatimData(nominatim_query);
             }
@@ -403,7 +428,6 @@ function createMap() {
         updateNominatimData: function (query) {
             reverseGeocodeLocation(
                 query,
-                mapCountryToLanguage(i18next.language),
                 function(nominatim_data) {
                     // console.log(JSON.stringify(nominatim_data, null, '\t'));
                     /* http://stackoverflow.com/a/1144249 */
@@ -527,7 +551,109 @@ function createMap() {
     document.getElementById('tag_selector_input').onchange = keyChanged;
 }
 
+function initializeUI() {
+    document.title = i18next.t('texts.heading map');
 
-$(document).ready(function () {
+    // Set HTML lang attribute based on current language
+    document.documentElement.setAttribute('lang', i18next.language);
+
+    // Add theme toggle button and language selector
+    var headerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;">';
+    headerHTML += '<h1>' + i18next.t('texts.heading map') + '</h1>';
+    headerHTML += '<div style="display: flex; gap: 1em; align-items: center;">';
+    headerHTML += '<button id="theme-toggle" style="padding: 0.5em 1em; cursor: pointer; border: 1px solid #ccc; background: transparent; border-radius: 4px;" title="Toggle dark mode">🌓</button>';
+    headerHTML += getUserSelectTranslateHTMLCode();
+    headerHTML += '</div></div>';
+    document.getElementById('header').innerHTML = headerHTML;
+
+    // Language selector handler
+    document.getElementById('language-select').addEventListener('change', function(e) {
+        var selectedLang = e.target.value;
+        document.documentElement.setAttribute('lang', selectedLang);
+        changeLanguage(selectedLang);
+    });
+
+    // Initialize theme
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.body.setAttribute('data-theme', savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+
+    // Theme toggle handler
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+        var currentTheme = document.body.getAttribute('data-theme');
+        var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+
+    // Key input Enter handler
+    document.getElementById('key').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            useUserKey(document.getElementById('key').value);
+            keyChanged();
+            return false;
+        }
+    });
+
+    // Tag selector
+    document.getElementById('tag_selector_label').innerHTML = '<strong>' + i18next.t('texts.config POIs') + '</strong>:';
+
+    var select = document.getElementById('tag_selector_input');
+    for (var tag_ind = 0; tag_ind < related_tags.length; tag_ind++) {
+        select.options[select.options.length] = new Option(related_tags[tag_ind], select.options.length);
+    }
+
+    // Map description
+    var desc = i18next.t('texts.map is showing', { wikiUrl: wiki_url });
+    desc += '<ul>';
+    desc += '<li>' + i18next.t('words.green')  + ': ' + i18next.t('texts.open now') + '</li>';
+    desc += '<li>' + i18next.t('words.yellow') + ': ' + i18next.t('texts.unknown now') + '</li>';
+    desc += '<li>' + i18next.t('words.red')    + ': ' + i18next.t('texts.closed now') + '</li>';
+    desc += '<li>' + i18next.t('words.violet')    + ': ' + i18next.t('texts.error') + '</li>';
+    desc += '</ul>';
+    desc += i18next.t('texts.warning', { sign: '<q>W</q>' });
+    document.getElementById('map_description').innerHTML = desc;
+
+    // Filter selector
+    var filterHTML = '<p>' + i18next.t('texts.map filter');
+    filterHTML += '<form name="filter_form">';
+    var showFilterOptions = ['none', 'error', 'warnOnly', 'errorOnly', 'open', 'unknown', 'closed', 'openOrUnknown'];
+    for (var i = 0; i < showFilterOptions.length; i++) {
+        var filter_id = showFilterOptions[i];
+        filterHTML += '<label><input type="radio" name="filter"'
+                + ' value="' + filter_id + '"'
+                + ' id="filter_form_' + filter_id + '"'
+                + ' onclick="applyNewFilter(this)">' + i18next.t('texts.filter.' + filter_id) + '</input></label><br>';
+    }
+    filterHTML += '</form></p>';
+    document.getElementById('filter_selector').innerHTML = filterHTML;
+    document.getElementById('filter_form_none').checked = true;
+
+    // Footer
+    var footer = '<p>';
+    footer += i18next.t('texts.data source', {
+        APIaTag:      '<a href="https://overpass-api.de/">Overpass API</a>',
+        OSMaTag:      '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>',
+        OSMStartaTag: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+        }) + '<br />';
+    footer += i18next.t('texts.this website', { url: repo_url, hoster: 'GitHub' });
+    footer += '</p>';
+    document.getElementById('footer').innerHTML = footer;
+}
+
+// Wait for both DOM and modules to be ready
+function initialize() {
+    initializeUI();
     createMap();
-});
+}
+
+// Initialize when modules are ready
+if (window.modulesLoaded) {
+    initialize();
+} else {
+    window.addEventListener('modulesLoaded', initialize, { once: true });
+}

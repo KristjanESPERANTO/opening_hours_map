@@ -1,3 +1,78 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+    color: black;
+}
+
+.content-section {
+    padding: 1em;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.visually-hidden {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+#map {
+    background: gray;
+    height:100%;
+    width:100%;
+}
+
+/* Dark mode */
+body[data-theme="dark"],
+html:has(body[data-theme="dark"]) {
+    background: #1e1e1e !important;
+    color: #e0e0e0;
+}
+
+body[data-theme="dark"] #map {
+    background: #2d2d2d;
+}
+
+body[data-theme="dark"] #header h1 {
+    color: #e0e0e0;
+}
+
+body[data-theme="dark"] #tag_selector,
+body[data-theme="dark"] #map_description,
+body[data-theme="dark"] #filter_selector,
+body[data-theme="dark"] #footer {
+    color: #e0e0e0;
+}
+
+body[data-theme="dark"] #tag_selector select,
+body[data-theme="dark"] #tag_selector input {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+body[data-theme="dark"] a {
+    color: #64b5f6;
+}
+
+body[data-theme="dark"] a:visited {
+    color: #ba68c8;
+}
+
+body[data-theme="dark"] #theme-toggle {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+#theme-toggle:hover {
+    opacity: 0.8;
+}
+
 noscript { color: #AA4400 }
 .olMap {
     color: black;
@@ -121,13 +196,9 @@ noscript { color: #AA4400 }
     color: red;
 }
 
-#map {
-    background: gray;
-    height:100%;
-    width:100%;
-}
 .olFramedCloudPopupContent {
-    overflow: auto !important;}
+    overflow: auto !important;
+}
 
 @media print {
     .olControlMousePosition,

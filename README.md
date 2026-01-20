@@ -55,6 +55,10 @@ The map uses OpenLayers to show a base map from OpenStreetMap. An additional opt
 
 <!-- }}} -->
 
+## License
+
+LGPL-3.0-only - see [LICENSE](LICENSE) file for details.
+
 [ol-lib]: http://openlayers.org/
 [oh-lib]: https://github.com/opening-hours/opening_hours.js
 [examples]: http://www.netzwolf.info/kartografie/openlayers/

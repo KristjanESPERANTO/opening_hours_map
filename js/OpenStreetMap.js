@@ -85,14 +85,14 @@ OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
 });
 
 /**
- * Class: OpenLayers.Layer.OSM.CycleMap
+ * Class: OpenLayers.Layer.OSM.CyclOSM
  *
  * Inherits from:
  *  - <OpenLayers.Layer.OSM>
  */
-OpenLayers.Layer.OSM.CycleMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
+OpenLayers.Layer.OSM.CyclOSM = OpenLayers.Class(OpenLayers.Layer.OSM, {
     /**
-     * Constructor: OpenLayers.Layer.OSM.CycleMap
+     * Constructor: OpenLayers.Layer.OSM.CyclOSM
      *
      * Parameters:
      * name - {String}
@@ -100,16 +100,19 @@ OpenLayers.Layer.OSM.CycleMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
      */
     initialize: function(name, options) {
         var url = [
-            "https://a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
-            "https://b.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
-            "https://c.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png"
+            "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png",
+            "https://b.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png",
+            "https://c.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png"
         ];
-        options = OpenLayers.Util.extend({ numZoomLevels: 19 }, options);
+        options = OpenLayers.Util.extend({
+            numZoomLevels: 20,
+            attribution: "Map style: CyclOSM (CC-BY-SA) | Map data: © OpenStreetMap contributors"
+        }, options);
         var newArguments = [name, url, options];
         OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
     },
 
-    CLASS_NAME: "OpenLayers.Layer.OSM.CycleMap"
+    CLASS_NAME: "OpenLayers.Layer.OSM.CyclOSM"
 });
 
 /**

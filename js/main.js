@@ -63,6 +63,11 @@ function createMap() {
     };
 
     window.keyChanged = function() {
+        // Clear debounce timer to reload immediately on manual tag change
+        if (poi_layer._reloadTimer) {
+            clearTimeout(poi_layer._reloadTimer);
+            poi_layer._reloadTimer = null;
+        }
         poi_layer.reloadPOIs();
         permalinkObject.updateLink();
     };
@@ -147,6 +152,8 @@ function createMap() {
         clusterSize: 16,
         clusterLimit: 50,
         reftime: new Date(),
+        reloadDebounceMs: 800, // Wait 800ms after map movement before reloading
+        _reloadTimer: null,
 
         createHtmlFromData: function (data) {
             const h_icon = '<img src="' + this.getIconUrl(data) + '" alt=""/>';
@@ -277,7 +284,16 @@ function createMap() {
 
             if (dragging || !this.visibility || this.map.zoom<this.minZoom) return;
 
-            this.reloadPOIs();
+            // Debounce: Cancel previous timer and start new one
+            if (this._reloadTimer) {
+                clearTimeout(this._reloadTimer);
+            }
+
+            const self = this;
+            this._reloadTimer = setTimeout(function() {
+                self._reloadTimer = null;
+                self.reloadPOIs();
+            }, this.reloadDebounceMs || 500);
         },
 
         //------------------------------------------------------------

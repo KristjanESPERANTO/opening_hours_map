@@ -19,10 +19,8 @@ OpenLayers.Util.OSM.originalOnImageLoadError = OpenLayers.Util.onImageLoadError;
  * Function: onImageLoadError
  */
 OpenLayers.Util.onImageLoadError = function() {
-    if (this.src.match(/^https:\/\/[abc]\.[a-z]+\.openstreetmap\.org\//)) {
+    if (this.src.match(/^https:\/\/(tile|[abc]\.[a-z]+)\.openstreetmap\.org\//)) {
         this.src = OpenLayers.Util.OSM.MISSING_TILE_URL;
-    } else if (this.src.match(/^https:\/\/[def]\.tah\.openstreetmap\.org\//)) {
-        // do nothing - this layer is transparent
     } else {
         OpenLayers.Util.OSM.originalOnImageLoadError;
     }
@@ -43,45 +41,13 @@ OpenLayers.Layer.OSM.Mapnik = OpenLayers.Class(OpenLayers.Layer.OSM, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
-        const url = [
-            "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-            "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-            "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
-        ];
+        const url = "https://tile.openstreetmap.org/${z}/${x}/${y}.png";
         options = OpenLayers.Util.extend({ numZoomLevels: 19 }, options);
         const newArguments = [name, url, options];
         OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
     },
 
     CLASS_NAME: "OpenLayers.Layer.OSM.Mapnik"
-});
-
-/**
- * Class: OpenLayers.Layer.OSM.Osmarender
- *
- * Inherits from:
- *  - <OpenLayers.Layer.OSM>
- */
-OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
-    /**
-     * Constructor: OpenLayers.Layer.OSM.Osmarender
-     *
-     * Parameters:
-     * name - {String}
-     * options - {Object} Hashtable of extra options to tag onto the layer
-     */
-    initialize: function(name, options) {
-        const url = [
-            "https://a.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
-            "https://b.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
-            "https://c.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
-        ];
-        options = OpenLayers.Util.extend({ numZoomLevels: 18 }, options);
-        const newArguments = [name, url, options];
-        OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
-    },
-
-    CLASS_NAME: "OpenLayers.Layer.OSM.Osmarender"
 });
 
 /**
@@ -99,11 +65,7 @@ OpenLayers.Layer.OSM.CyclOSM = OpenLayers.Class(OpenLayers.Layer.OSM, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
-        const url = [
-            "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png",
-            "https://b.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png",
-            "https://c.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png"
-        ];
+        const url = "https://tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png";
         options = OpenLayers.Util.extend({
             numZoomLevels: 20,
             attribution: "Map style: CyclOSM (CC-BY-SA) | Map data: © OpenStreetMap contributors"

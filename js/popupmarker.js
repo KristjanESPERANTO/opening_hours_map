@@ -1370,7 +1370,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             }
             rows.push ('<tr><th scope="row">' + this.html(title) +
                 '</th><td>' +
-                this.formatValue(value,tag).split('\034').join('<br/>') +
+                this.formatValue(value,tag).split('\x1c').join('<br/>') +
                 '</td></tr>');
         }
 
@@ -1510,7 +1510,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             const textarea = textareas[i];
             const value = data[textarea.name] || '';
-            textarea.value = value.split('\034').join('\n');
+            textarea.value = value.split('\x1c').join('\n');
         }
     },
 
@@ -1534,7 +1534,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 const lang_lemma = text.match(/^(\w\w):(.+)$/);
                 if (lang_lemma) {
                     const html_lemma =
-                this.html(lang_lemma[2].split('\040').join('_'));
+                this.html(lang_lemma[2].split('\x20').join('_'));
                     return '<a target="_blank" href="http://' +
                         lang_lemma[1] + '.wikipedia.org/wiki/' + html_lemma +
                         '">' + this.html(text) + '</a>';
@@ -1563,7 +1563,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 if (interwiki) {
                     const html_interwiki = this.html (interwiki[1]);
                     return '<a target="_blank" href="http://www.wikipedia.org/wiki/' +
-                        html_interwiki.replace(/\040/g,'_') + '">' +
+                        html_interwiki.replace(/ /g,'_') + '">' +
                             html_interwiki + '</a>';
                 }
 
@@ -1636,7 +1636,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //--------------------------------------------------------------
 
         match = url.match (/^\s*(File:.*\S)/);
-        if (match) { return 'http://www.wikipedia.org/wiki/' + match[1].replace(/\040/g,'_'); }
+        if (match) { return 'http://www.wikipedia.org/wiki/' + match[1].replace(/ /g,'_'); }
 
         return null;
     },
@@ -1711,7 +1711,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         let match = (data.wikipedia||'').match(/^([a-z]+):([^/;]*[^/;\s])([;\s].*)?$/);
         if (match) {
             return 'http://' + match[1] + '.wikipedia.org/wiki/' +
-                match[2].replace(/\040/g, '_');
+                match[2].replace(/ /g, '_');
         }
 
         //------------------------------------------------------
@@ -1739,7 +1739,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             let valueMatch = data[tag].match(/^([^/;]*[^/;\s])\s*$/);
             if (valueMatch) {
                 return 'http://' + tagMatch[1] + '.wikipedia.org/wiki/' +
-                    valueMatch[1].replace(/\040/g, '_');
+                    valueMatch[1].replace(/ /g, '_');
             }
 
             //----------------------------------------------

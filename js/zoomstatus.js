@@ -65,8 +65,8 @@ OpenLayers.Control.ZoomStatus=OpenLayers.Class(OpenLayers.Control,{
 
     redraw: function () {
         this.lastZoom=this.map.zoom;
-        var next = this.getNextZoomStep();
-        var text = this.div.innerHTML=this.options.html || this.defaultHtml;
+        const next = this.getNextZoomStep();
+        const text = this.div.innerHTML=this.options.html || this.defaultHtml;
 
         this.div.innerHTML=OpenLayers.String.format(text, {
             actual: this.lastZoom,
@@ -83,9 +83,9 @@ OpenLayers.Control.ZoomStatus=OpenLayers.Class(OpenLayers.Control,{
 
     getNextZoomStep: function (current) {
         if (!this.map) { return null; }
-        var steps=0;
+        let steps=0;
         for (var i in this.map.layers) {
-            var layer = this.map.layers[i];
+            const layer = this.map.layers[i];
             if (layer.zoomSteps && layer.visibility) {
                 steps |= layer.zoomSteps;
             }

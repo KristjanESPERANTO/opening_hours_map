@@ -128,7 +128,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (this.reloadInterval && this.location) {
 
-            var closure = this;
+            const closure = this;
             this.blockSize = 0;
             this.reloadTimer=window.setInterval (function() {
                 closure.request(closure.location);
@@ -168,7 +168,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             if (ev.shiftKey || ev.ctrlKey) { return null; }
 
-            var lonLat=this.map.getLonLatFromViewPortPx(ev.xy);
+            const lonLat=this.map.getLonLatFromViewPortPx(ev.xy);
 
             this.drawTemporaryIcon (this.createIconFromData(marker.data, true),
                 this.map.getLayerPxFromLonLat (lonLat));
@@ -177,7 +177,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             marker.data.lat = lonLat.lat;
             marker.data.lon = lonLat.lon;
 
-            var postData = OpenLayers.Util.getParameterString (marker.data);
+            const postData = OpenLayers.Util.getParameterString (marker.data);
             this.updateMarkerOnServer (marker, postData);
 
             return null;
@@ -235,7 +235,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             this.map.moveTo (lonlat, Math.max (this.map.getZoom(), this.minZoom));
         }
 
-        var marker = this.createMarker (data);
+        const marker = this.createMarker (data);
 
         marker.temporary = true;
 
@@ -248,18 +248,18 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (!maxDistance) { maxDistance = 1e10; }
 
-        var result = null;
-        var dist   = maxDistance * maxDistance + 1;
+        let result = null;
+        let dist   = maxDistance * maxDistance + 1;
 
-        for (var i in this.markers) {
-            var marker = this.markers[i];
-            var icon   = marker.icon;
+        for (const i in this.markers) {
+            const marker = this.markers[i];
+            const icon   = marker.icon;
             if (!icon) { continue; }
-            var px    = icon.px;
+            const px    = icon.px;
             if (!px) { continue; }
-            var dx    = px.x - center.x;
-            var dy    = px.y - center.y;
-            var d2    = dx*dx + dy*dy;
+            const dx    = px.x - center.x;
+            const dy    = px.y - center.y;
+            const d2    = dx*dx + dy*dy;
             if (d2 >= dist) { continue; }
             result    = marker;
             dist    = d2;
@@ -333,7 +333,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    delayed Popup
         //--------------------------------------------------------------
 
-        var marker = this.delayedPopupMarker;
+        const marker = this.delayedPopupMarker;
         if (marker) {
             this.delayedPopupMarker=null;
             this.createPopup(marker);
@@ -349,17 +349,17 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (!this.blockSize) { return bounds; }
 
-        var l0 = Math.floor (bounds.left  / this.blockSize);
-        var r0 = Math.ceil  (bounds.right / this.blockSize);
-        var b0 = Math.floor (bounds.bottom/ this.blockSize);
-        var t0 = Math.ceil  (bounds.top   / this.blockSize);
-        var l=r0;
-        var r=l0;
-        var t=b0;
-        var b=t0;
-        for (var y=b0; y<t0; y++) {
-            for (var x=l0; x<r0; x++) {
-                var id = y+':'+x;
+        const l0 = Math.floor (bounds.left  / this.blockSize);
+        const r0 = Math.ceil  (bounds.right / this.blockSize);
+        const b0 = Math.floor (bounds.bottom/ this.blockSize);
+        const t0 = Math.ceil  (bounds.top   / this.blockSize);
+        let l=r0;
+        let r=l0;
+        let t=b0;
+        let b=t0;
+        for (let y=b0; y<t0; y++) {
+            for (let x=l0; x<r0; x++) {
+                const id = y+':'+x;
                 if (this.loadedAreas[id]) { continue; }
                 this.loadedAreas[id]=true;
                 if (x< l) { l=x;   }
@@ -380,7 +380,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         if (this.loadBounds==this.loadedBounds) { return; }
         if (this.loadingUrl) { return; }
         this.loadedBounds = this.loadBounds;
-        var area = this.getUnknownArea (this.loadedBounds);
+        const area = this.getUnknownArea (this.loadedBounds);
         if (area) { this.request (this.createUrlForBounds(area)); }
     },
 
@@ -425,16 +425,16 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         } else {
 
-            var objects = this.parseCSV (request.responseText);
+            const objects = this.parseCSV (request.responseText);
             if (!this.blockSize) { this.erase (true);}
             //if (objects.length>0) { objects[objects.length-1].isLatest=true;}
-            for (var i=0; objects.length>i; i++) {
+            for (let i=0; objects.length>i; i++) {
                 this.createMarker (objects[i]);
             }
         }
 
         if (this.loadingUrl==this.location && !this.map.getCenter()) {
-            var extent = this.getBounds();
+            const extent = this.getBounds();
             if (extent) {
                 this.map.zoomToExtent(extent);
                 if (this.restrictMapExtent) {
@@ -450,7 +450,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         if (this.visibility) { this.loadNext(); }
 
         if (this.selectId) {
-            var marker = this.getMarkerByDataId(this.selectId);
+            const marker = this.getMarkerByDataId(this.selectId);
             this.selectId = null;
             this.createPopup (marker, true);
         }
@@ -479,7 +479,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     getMarkerByDataId: function (id) {
 
-        for (var i=0; i<this.markers.length; i++) {
+        for (let i=0; i<this.markers.length; i++) {
             if (this.markers[i].data.id==id) { return this.markers[i]; }
         }
         return null;
@@ -497,8 +497,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (!data.lat && data.point) { data.lat=data.point.split(',')[0]; }
         if (!data.lon && data.point) { data.lon=data.point.split(',')[1]; }
-        var lon = parseFloat (data.lon, 10);
-        var lat = parseFloat (data.lat, 10);
+        const lon = parseFloat (data.lon, 10);
+        const lat = parseFloat (data.lat, 10);
 
         if (isNaN(lon) || isNaN(lat)) {
 
@@ -512,10 +512,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             return null;
         }
 
-        var lonLat=new OpenLayers.LonLat(lon, lat).
+        const lonLat=new OpenLayers.LonLat(lon, lat).
             transform(this.map.displayProjection, this.map.getProjectionObject());
 
-        var marker = new OpenLayers.Marker (lonLat, this.createIconFromData(data));
+        const marker = new OpenLayers.Marker (lonLat, this.createIconFromData(data));
 
         marker.icon.imageDiv.firstChild.className='olPopupMarker';
         marker.icon.imageDiv.className='olPopupMarker';
@@ -539,18 +539,18 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (this.classByType && data.type && this.classByType[data.type] && data['~members']) {
 
-            var groupMemberIds = data['~members'].split(',');
-            var groupClass     = this.classByType[data.type];
-            var groupLayer     = this;
+            const groupMemberIds = data['~members'].split(',');
+            const groupClass     = this.classByType[data.type];
+            const groupLayer     = this;
 
             marker.icon.imageDiv.onmouseover = function() {
 
-                var replacementIcon = null;
+                const replacementIcon = null;
 
-                for (var i in groupMemberIds) {
+                for (const i in groupMemberIds) {
 
-                    var memberId = groupMemberIds[i];
-                    var memberMarker = groupLayer.getMarkerByDataId(memberId);
+                    const memberId = groupMemberIds[i];
+                    const memberMarker = groupLayer.getMarkerByDataId(memberId);
 
                     if (!memberMarker) continue;
                     OpenLayers.Element.addClass (memberMarker.icon.imageDiv, groupClass);
@@ -584,10 +584,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
                 if (evt.shiftKey || evt.ctrlKey) return;
 
-                for (var i in groupMemberIds) {
+                for (const i in groupMemberIds) {
 
-                    var memberId = groupMemberIds[i];
-                    var marker = groupLayer.getMarkerByDataId(memberId);
+                    const memberId = groupMemberIds[i];
+                    const marker = groupLayer.getMarkerByDataId(memberId);
 
                     if (!marker) continue;
                     OpenLayers.Element.removeClass (marker.icon.imageDiv, groupClass);
@@ -625,7 +625,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     updateMarker: function (marker, busy) {
 
-        var lonLat=new OpenLayers.LonLat(marker.data.lon, marker.data.lat).
+        const lonLat=new OpenLayers.LonLat(marker.data.lon, marker.data.lat).
             transform(this.map.displayProjection, this.map.getProjectionObject());
 
         marker.moveTo (this.map.getLayerPxFromLonLat (lonLat));
@@ -643,7 +643,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     setTooltip: function (marker) {
 
-        var html = this.createTooltipFromData (marker.data);
+        let html = this.createTooltipFromData (marker.data);
         if (!html) { return; }
 
         if (this.maxTooltipWidth) {
@@ -651,11 +651,11 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 {displayClass: 'olPopupMarkerTooltip'});
         }
 
-        var size = OpenLayers.Util.getRenderedDimensions (
+        const size = OpenLayers.Util.getRenderedDimensions (
             html, null,
             {displayClass: 'olPopupMarkerTooltip'});
 
-        var tooltipDiv = marker.tooltipDiv;
+        let tooltipDiv = marker.tooltipDiv;
         if (!tooltipDiv) {
 
             tooltipDiv=document.createElement('div');
@@ -673,20 +673,20 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     wrap: function (html, width, options) {
 
-        var result = [];
+        const result = [];
 
-        var blocks = OpenLayers.String.trim (html.replace (/<br\/?>/,'\n')).split ('\n');
+        const blocks = OpenLayers.String.trim (html.replace (/<br\/?>/,'\n')).split ('\n');
         while (blocks.length >= 1) {
 
-            var words = OpenLayers.String.trim (blocks.shift()).split(' ');
+            const words = OpenLayers.String.trim (blocks.shift()).split(' ');
             while (words.length >= 1) {
 
-                var line = words.shift();
+                let line = words.shift();
                 while (words.length >= 1) {
 
-                    var word = OpenLayers.String.trim (words[0]);
-                    var probe = line + '&nbsp;' + word;
-                    var size = OpenLayers.Util.getRenderedDimensions (
+                    const word = OpenLayers.String.trim (words[0]);
+                    const probe = line + '&nbsp;' + word;
+                    const size = OpenLayers.Util.getRenderedDimensions (
                         probe, null, options);
                     if (size.w > width) { break; }
                     line = probe;
@@ -723,8 +723,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         if (!keepCurrent) { this.destroyPopup(); }
 
         if (this.markers!==null) {
-            for (var index in this.markers) {
-                var marker = this.markers[index];
+            for (const index in this.markers) {
+                const marker = this.markers[index];
                 if (marker != this.currentMarker) {
                     marker.destroy();
                 }
@@ -747,7 +747,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (evt) OpenLayers.Event.stop(evt);
 
-        var layer = this.layer;
+        const layer = this.layer;
 
         if (evt.shiftKey && !evt.ctrlKey || layer.locateMarker) {
             return false;
@@ -834,14 +834,14 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    check for overlapping icons
         //--------------------------------------------------------------
 
-        var cluster = [];
+        const cluster = [];
         if (this.clusterSize>0 && this.map.zoom>=this.clusterMinZoom) {
 
-            var limit = this.clusterSize/Math.pow(2,this.map.zoom)*156543;
+            const limit = this.clusterSize/Math.pow(2,this.map.zoom)*156543;
 
             for (var i=0; i<this.markers.length; i++) {
 
-                var member=this.markers[i];
+                const member=this.markers[i];
                 if (Math.abs(marker.lonlat.lat-member.lonlat.lat)>limit) {
                     continue;
                 }
@@ -851,7 +851,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 cluster.push (member.data);
                 if (member.data.location &&
                         this.locations[member.data.location]) {
-                    for (var j=0; j<
+                    for (let j=0; j<
                 this.locations[member.data.location].length; j++) {
                         cluster.push (this.locations[
                             member.data.location][j]);
@@ -903,7 +903,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             if (!this.processKeyPress) {
 
-                var layer = this;
+                const layer = this;
                 this.processKeyPress = function (evt) {
 
                     if (evt.keyCode === layer.closeKeyCode) {
@@ -925,8 +925,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (this.enableUpdate || this.enableDelete || this.enableLocate) {
 
-            var div = this.currentPopup.div.firstChild.firstChild;
-            var buttons = div.getElementsByTagName('button');
+            const div = this.currentPopup.div.firstChild.firstChild;
+            let buttons = div.getElementsByTagName('button');
 
             if (this.checkEdit (marker.data)===true && !buttons.length) {
 
@@ -1018,8 +1018,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    onsubmit + focus
         //--------------------------------------------------------------
 
-        var div = this.currentPopup.div.firstChild.firstChild;
-        var form = div.getElementsByTagName('form')[0];
+        const div = this.currentPopup.div.firstChild.firstChild;
+        const form = div.getElementsByTagName('form')[0];
         if (!form) {
             alert ('No <form> found.');
         }
@@ -1029,7 +1029,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //--------------------------------------------------------------
 
         if (this.defaultValues) {
-            for (var tag in this.defaultValues) {
+            for (const tag in this.defaultValues) {
                 if (!marker.data[tag] && marker.data[tag]!==0) {
                     marker.data[tag]=this.defaultValues[tag];
                 }
@@ -1050,22 +1050,22 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     formOnSubmit: function () {
 
-        var layer = this.marker.layer;
+        const layer = this.marker.layer;
 
         //--------------------------------------------------------------
         //    Extrakt values
         //--------------------------------------------------------------
 
-        var newData = {
+        const newData = {
             id:    this.marker.data.id,
             lat:    this.marker.data.lat,
             lon:    this.marker.data.lon
         };
 
-        var inputs = this.getElementsByTagName('input');
+        const inputs = this.getElementsByTagName('input');
         for (var i=0; i<inputs.length; i++) {
 
-            var input = inputs[i];
+            const input = inputs[i];
             var value = input.value;
 
             switch (input.type) {
@@ -1082,19 +1082,19 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             newData[input.name]=value;
         }
 
-        var selects = this.getElementsByTagName('select');
+        const selects = this.getElementsByTagName('select');
         for (i=0; i<selects.length; i++) {
 
-            var select = selects[i];
+            const select = selects[i];
             value = select.selectedIndex>=0 ?
                 select.options[select.selectedIndex].value : '';
             newData[select.name]=value;
         }
 
-        var textareas = this.getElementsByTagName('textarea');
+        const textareas = this.getElementsByTagName('textarea');
         for (i=0; i<textareas.length; i++) {
 
-            var textarea = textareas[i];
+            const textarea = textareas[i];
             value    = OpenLayers.String.trim(textarea.value);
             newData[textarea.name]=value;
         }
@@ -1103,7 +1103,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    Check data
         //--------------------------------------------------------------
 
-        var result = layer.checkData (newData);
+        const result = layer.checkData (newData);
         if (result) {
             alert (result);
             return false;
@@ -1118,7 +1118,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    Update on server
         //--------------------------------------------------------------
 
-        var postData = OpenLayers.Util.getParameterString (newData);
+        const postData = OpenLayers.Util.getParameterString (newData);
         layer.updateMarkerOnServer (this.marker, postData);
         return true;
     },
@@ -1133,8 +1133,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     deleteButtonOnClick: function () {
 
-        var marker = this.marker;
-        var layer  = marker.layer;
+        const marker = this.marker;
+        const layer  = marker.layer;
 
         if (!confirm (layer.labelConfirmDelete)) {
             return false;
@@ -1146,7 +1146,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    Update on server
         //--------------------------------------------------------------
 
-        var postData = OpenLayers.Util.getParameterString ({COMMAND: 'DELETE', id: marker.data.id});
+        const postData = OpenLayers.Util.getParameterString ({COMMAND: 'DELETE', id: marker.data.id});
         layer.updateMarkerOnServer (marker, postData);
         return null;
     },
@@ -1157,7 +1157,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     locateButtonOnClick: function () {
 
-        var marker = this.marker;
+        const marker = this.marker;
         marker.layer.relocateMarker (marker);
     },
 
@@ -1195,7 +1195,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         this.div.style.opacity = 1.0;
         document.onkeypress = null;
 
-        var div = this.locateDiv;
+        const div = this.locateDiv;
         if (div) {
             this.map.events.unregister ('mousemove', div, div.onmousemove);
             this.map.layerContainerDiv.removeChild (div);
@@ -1229,7 +1229,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     moveTemporaryIcon: function (ev) {
 
         if (!this.temporaryIcon) { return; }
-        var lonLat=this.map.getLonLatFromViewPortPx(ev.xy);
+        const lonLat=this.map.getLonLatFromViewPortPx(ev.xy);
         var px = px=this.map.getLayerPxFromLonLat (lonLat);
         this.temporaryIcon.moveTo (px);
     },
@@ -1256,7 +1256,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
                 this.layer.destroyTemporaryIcon();
 
-                var lines = request.responseText.split ('\n');
+                const lines = request.responseText.split ('\n');
                 lines.pop();
 
                 if (lines.length<2) {
@@ -1264,11 +1264,11 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                     return;
                 }
 
-                var names = OpenLayers.String.trim(lines.shift()).split(this.layer.fieldSeparator);
-                var values= OpenLayers.String.trim(lines.shift()).split(this.layer.fieldSeparator);
+                const names = OpenLayers.String.trim(lines.shift()).split(this.layer.fieldSeparator);
+                const values= OpenLayers.String.trim(lines.shift()).split(this.layer.fieldSeparator);
 
                 this.data = {};
-                for (var i in names) {
+                for (const i in names) {
                     this.data[names[i]] = values[i];
                 }
                 this.layer.updateMarker (this);
@@ -1325,8 +1325,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     parseCSV: function (text) {
 
-        var lines=text.split('\n');
-        var names = OpenLayers.String.trim(lines.shift()).split(this.fieldSeparator);
+        const lines=text.split('\n');
+        const names = OpenLayers.String.trim(lines.shift()).split(this.fieldSeparator);
         if (names.length<2) {
             OpenLayers.Console.userError (OpenLayers.i18n ('errorLoadingCSV', {
                 'url':   this.loadingUrl,
@@ -1336,27 +1336,27 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (!this.fieldTitles) {
             this.fieldTitles = {};
-            for (var i in names) {
+            for (const i in names) {
                 var name = names[i];
                 this.fieldTitles[name]=name;
             }
         }
 
-        var result=[];
+        const result=[];
 
-        for (var lineno=0;lines.length>lineno;lineno++) {
-            var object = {};
-            var values = OpenLayers.String.trim(lines[lineno]).split(this.fieldSeparator);
+        for (let lineno=0;lines.length>lineno;lineno++) {
+            const object = {};
+            const values = OpenLayers.String.trim(lines[lineno]).split(this.fieldSeparator);
             if (values.length<=1) { continue; }
-            for (var col=0; values.length>col; col++) {
+            for (let col=0; values.length>col; col++) {
                 name = names[col];
                 if (name) {
                     object[name] = values[col];
                 } else {
                     tagval=values[col].split('=');
                     if (tagval.length >= 2 && tagval[0]) {
-                        var tag = tagval.shift();
-                        var val = tagval.join('=');
+                        const tag = tagval.shift();
+                        const val = tagval.join('=');
                         if ((val || val===0) && !object[tag]) {
                             object[tag]=val;
                         }
@@ -1384,19 +1384,19 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     createHtmlFromData: function (data) {
 
         if (data._csize) {
-            var icon = '<img src="'+this.getIconUrl(data)+'" alt=""/>';
+            const icon = '<img src="'+this.getIconUrl(data)+'" alt=""/>';
             return '<div>'+icon+'&nbsp;Dieses Icon ist in der &#220;bersichtsdarstellung Platzhalter f&#252;r '+data._csize+' Knoten in der nahen Umgebung. Diese werden ab Zoomstufe '+this.minZoom+' nachgeladen und angezeigt.</div>\n';
         }
 
-        var result = [];
+        const result = [];
 
-        var rows = [];
-        for (var tag in data) {
+        const rows = [];
+        for (const tag in data) {
             if (this.fieldTypes[tag]=='hidden' || !data[tag]&&data[tag]!==0) {
                 continue;
             }
-            var title = this.fieldTitles[tag] || tag;
-            var value = data[tag] || '';
+            const title = this.fieldTitles[tag] || tag;
+            let value = data[tag] || '';
             if (this.fieldValues[tag] && this.fieldValues[tag][value]) {
                 value = this.fieldValues[tag][value];
             }
@@ -1426,7 +1426,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     createForm: function (data) {
 
-        var result = [];
+        const result = [];
         result.push ('<form>');
         result.push ('<table>');
 
@@ -1436,9 +1436,9 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 continue;
             }
 
-            var hName = this.html (name);
-            var title = this.fieldTitles[name] || name;
-            var valueTitles = this.fieldValues[name];
+            const hName = this.html (name);
+            const title = this.fieldTitles[name] || name;
+            const valueTitles = this.fieldValues[name];
             var field;
 
             switch (this.fieldTypes[name]) {
@@ -1496,10 +1496,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     fillForm: function (form, data) {
 
-        var inputs = form.getElementsByTagName ('input');
+        const inputs = form.getElementsByTagName ('input');
         for (var i=0; i<inputs.length; i++) {
 
-            var input = inputs[i];
+            const input = inputs[i];
             var value = data[input.name] || '';
             switch (input.type) {
             case 'radio':
@@ -1512,13 +1512,13 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             }
         }
 
-        var selects = form.getElementsByTagName ('select');
+        const selects = form.getElementsByTagName ('select');
         for (i=0; i<selects.length; i++) {
 
-            var select = selects[i];
+            const select = selects[i];
             value = data[select.name] || '';
-            var missing = !value && value !== 0;
-            for (var j=0; j<select.options.length; j++) {
+            let missing = !value && value !== 0;
+            for (let j=0; j<select.options.length; j++) {
                 var option = select.options[j];
                 if (option.value == value) {
                     option.selected = true;
@@ -1534,10 +1534,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             }
         }
 
-        var textareas = form.getElementsByTagName ('textarea');
+        const textareas = form.getElementsByTagName ('textarea');
         for (i=0; i<textareas.length; i++) {
 
-            var textarea = textareas[i];
+            const textarea = textareas[i];
             value = data[textarea.name] || '';
             textarea.value = value.split('\034').join('\n');
         }
@@ -1560,7 +1560,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         if (!(text+'').match(/http:/)) {
 
             if (tag=='wikipedia') {
-                var lang_lemma = text.match(/^(\w\w):(.+)$/);
+                const lang_lemma = text.match(/^(\w\w):(.+)$/);
                 if (lang_lemma) {
                     var html_lemma =
                 this.html(lang_lemma[2].split('\040').join('_'));
@@ -1571,7 +1571,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             } else if (tag.substring(0,10)=='wikipedia:' && text.match(/^\S+$/)) {
 
-                var wiki_lang = tag.match(/^wikipedia:(\w\w)$/);
+                const wiki_lang = tag.match(/^wikipedia:(\w\w)$/);
 
                 if (wiki_lang) {
                     html_lemma = this.html(text);
@@ -1587,7 +1587,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             } else if (tag.match(/^(image|image:\w+)$/)) {
 
-                var interwiki = text.match (/^(File:.*\S)/);
+                const interwiki = text.match (/^(File:.*\S)/);
 
                 if (interwiki) {
                     html_interwiki = this.html (interwiki[1]);
@@ -1604,11 +1604,11 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             } else if (tag=='~in') {
 
                 var result = [];
-                var rels = text.split(/[,\s]+/);
-                for (var r in rels) {
+                const rels = text.split(/[,\s]+/);
+                for (const r in rels) {
 
-                    var rel=rels[r];
-                    var id=rel.substr(1);
+                    const rel=rels[r];
+                    const id=rel.substr(1);
                     result.push (
     '<a target="_blank" href="http://www.openstreetmap.org/relation/' + id + '">' + rel + '</a>');
                 }
@@ -1616,10 +1616,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             }
         }
 
-        var list=(text+'').split (';');
+        const list=(text+'').split (';');
         var result=[];
-        for (var i=0; i<list.length;i++) {
-            var value = this.html (OpenLayers.String.trim (list[i]));
+        for (let i=0; i<list.length;i++) {
+            const value = this.html (OpenLayers.String.trim (list[i]));
             if (value.substr (0,7)=='http://' || value.substr (0,8)=='https://') {
                 result.push ('<a target="_blank" href="'+value+'">'+this.shrinkUrl(value)+'</a>');
                 continue;
@@ -1657,7 +1657,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (!url) return null;
 
-        var match = (url+'').match (/^\s*(https?:\/\/)?([\w.-]+(:\d+)?)((\/[^\s;]*)?)([;\s].*)?$/);
+        let match = (url+'').match (/^\s*(https?:\/\/)?([\w.-]+(:\d+)?)((\/[^\s;]*)?)([;\s].*)?$/);
         if (match) { return (match[1] || 'http://') + match[2] + (match[4] || '/'); }
 
         //--------------------------------------------------------------
@@ -1686,24 +1686,24 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     createOsmLinks: function (data, argId) {
 
-        var osm = (id||data.id||'').match(/^([nwr])([1-9][0-9]*)$/);
-        var type = osm ? {n:'node',r:'relation',w:'way'}[osm[1]] : null;
+        const osm = (id||data.id||'').match(/^([nwr])([1-9][0-9]*)$/);
+        const type = osm ? {n:'node',r:'relation',w:'way'}[osm[1]] : null;
         var id   = argId ? argId : osm ? osm[2] : null;
 
-        var l=parseFloat(data.lon)-0.0001;
-        var b=parseFloat(data.lat)-0.0002;
-        var r=parseFloat(data.lon)+0.0001;
-        var t=parseFloat(data.lat)+0.0002;
+        let l=parseFloat(data.lon)-0.0001;
+        let b=parseFloat(data.lat)-0.0002;
+        let r=parseFloat(data.lon)+0.0001;
+        let t=parseFloat(data.lat)+0.0002;
 
         if (data.bbox) {
-            var lbrt = data.bbox.split(',');
+            const lbrt = data.bbox.split(',');
             l = parseFloat(lbrt[0])-0.0001;
             b = parseFloat(lbrt[1])-0.0001;
             r = parseFloat(lbrt[2])+0.0001;
             t = parseFloat(lbrt[3])+0.0001;
         }
 
-        var result = [];
+        const result = [];
 
         if (osm) {
             result.push ('<a target="_blank" href="http://www.openstreetmap.org/' +
@@ -1754,9 +1754,9 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    wikipedia : LANG = ...
         //------------------------------------------------------
 
-        for (var tag in data) {
+        for (const tag in data) {
 
-            var tagMatch = tag.match(/^wikipedia:([a-z]+)$/);
+            const tagMatch = tag.match(/^wikipedia:([a-z]+)$/);
 
             if (!tagMatch) continue;
 
@@ -1794,11 +1794,11 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     createHtmlFromList: function (list) {
 
-        var items = [];
-        var clusters = [];
-        var nItems=0;
-        var limit = this.clusterLimit && this.clusterLimit<list.length ? this.clusterLimit : list.length;
-        for (var i=0; i<list.length; i++) {
+        let items = [];
+        const clusters = [];
+        let nItems=0;
+        const limit = this.clusterLimit && this.clusterLimit<list.length ? this.clusterLimit : list.length;
+        for (let i=0; i<list.length; i++) {
             if (list[i]._csize || list[i].cluster) {
                 clusters.push (this.createHtmlFromData(list[i]));
             } else {
@@ -1841,10 +1841,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (!this.markers || !this.markers.length) { return null; }
 
-        var bounds = new OpenLayers.Bounds ();
+        const bounds = new OpenLayers.Bounds ();
 
         if (this.region) {
-            var count=0;
+            let count=0;
             for (var i in this.markers) {
                 if (!this.markers[i].data.region) {
                     continue;
@@ -1872,12 +1872,12 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (!params) { params = OpenLayers.Util.getParameters(); }
 
-        var query=[];
-        var sets=new Object();
+        const query=[];
+        const sets=new Object();
 
-        for (var tag in params) {
-            var fov=tag.split('.');
-            var val=OpenLayers.String.trim(params[tag]);
+        for (const tag in params) {
+            const fov=tag.split('.');
+            let val=OpenLayers.String.trim(params[tag]);
 
             var field = fov[0];
             var op    = fov[1];

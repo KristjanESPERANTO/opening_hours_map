@@ -30,7 +30,7 @@ OpenLayers.Control.LoadStatus=OpenLayers.Class(OpenLayers.Control,{
 
     setMap: function (map) {
         OpenLayers.Control.prototype.setMap.apply(this,arguments);
-        for (var layer in this.map.layers) {
+        for (const layer in this.map.layers) {
             this.attachLayer (layer);
         }
         this.map.events.register ("addlayer", this, this.registerLayer);
@@ -53,11 +53,11 @@ OpenLayers.Control.LoadStatus=OpenLayers.Class(OpenLayers.Control,{
         if (evt && evt.type=="loadend") {
             this.loadStatus[evt.object.id] = null;
         }
-        var list = [];
-        for (var id in this.loadStatus) {
+        const list = [];
+        for (const id in this.loadStatus) {
             if (this.loadStatus[id] !== null) { list.push(this.loadStatus[id]); }
         }
-        var text=this.options.html || this.defaultHtml;
+        const text=this.options.html || this.defaultHtml;
         this.div.innerHTML=OpenLayers.String.format(text, {layers: list.join(',<br/>')});
         this.div.style.display = list.length>=1 ? "block" : "none";
     },

@@ -43,13 +43,13 @@ OpenLayers.Layer.OSM.Mapnik = OpenLayers.Class(OpenLayers.Layer.OSM, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
-        var url = [
+        const url = [
             "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
             "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
             "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
         ];
         options = OpenLayers.Util.extend({ numZoomLevels: 19 }, options);
-        var newArguments = [name, url, options];
+        const newArguments = [name, url, options];
         OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
     },
 
@@ -71,13 +71,13 @@ OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
-        var url = [
+        const url = [
             "https://a.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
             "https://b.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
             "https://c.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
         ];
         options = OpenLayers.Util.extend({ numZoomLevels: 18 }, options);
-        var newArguments = [name, url, options];
+        const newArguments = [name, url, options];
         OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
     },
 
@@ -99,7 +99,7 @@ OpenLayers.Layer.OSM.CyclOSM = OpenLayers.Class(OpenLayers.Layer.OSM, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
-        var url = [
+        const url = [
             "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png",
             "https://b.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png",
             "https://c.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png"
@@ -108,7 +108,7 @@ OpenLayers.Layer.OSM.CyclOSM = OpenLayers.Class(OpenLayers.Layer.OSM, {
             numZoomLevels: 20,
             attribution: "Map style: CyclOSM (CC-BY-SA) | Map data: © OpenStreetMap contributors"
         }, options);
-        var newArguments = [name, url, options];
+        const newArguments = [name, url, options];
         OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
     },
 
@@ -130,13 +130,13 @@ OpenLayers.Layer.OSM.Maplint = OpenLayers.Class(OpenLayers.Layer.OSM, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
-        var url = [
+        const url = [
             "https://d.tah.openstreetmap.org/Tiles/maplint/${z}/${x}/${y}.png",
             "https://e.tah.openstreetmap.org/Tiles/maplint/${z}/${x}/${y}.png",
             "https://f.tah.openstreetmap.org/Tiles/maplint/${z}/${x}/${y}.png"
         ];
         options = OpenLayers.Util.extend({ numZoomLevels: 18, isBaseLayer: false, visibility: false }, options);
-        var newArguments = [name, url, options];
+        const newArguments = [name, url, options];
         OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
     },
 

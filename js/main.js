@@ -1,10 +1,10 @@
-var repo_url = 'https://github.com/opening-hours/opening_hours_map';
-var html_url = 'http://openingh.openstreetmap.de/';
-var wiki_url = 'https://wiki.openstreetmap.org/wiki/Key:opening_hours';
-var evaluation_tool_url = 'evaluation_tool/';
+const repo_url = 'https://github.com/opening-hours/opening_hours_map';
+const html_url = 'http://openingh.openstreetmap.de/';
+const wiki_url = 'https://wiki.openstreetmap.org/wiki/Key:opening_hours';
+const evaluation_tool_url = 'evaluation_tool/';
 
 /* Source ../opening_hours.js/related_tags.txt */
-var related_tags = [
+const related_tags = [
     'opening_hours',
     'opening_hours:kitchen',
     'opening_hours:warm_kitchen',
@@ -21,7 +21,7 @@ var related_tags = [
 
 if (!document.onLoadFunctions) {
     document.onLoadFunctions = new Array();
-    window.onload = function () { for (var i=0; document.onLoadFunctions.length>i;i++) document.onLoadFunctions[i](); }
+    window.onload = function () { for (let i=0; document.onLoadFunctions.length>i;i++) document.onLoadFunctions[i](); }
 }
 
 
@@ -45,18 +45,18 @@ function editPopupContent(content, lat, lon, type, id, oh_value) {
 
 function createMap() {
 
-    var map;
-    var poi_layer;
-    var nominatim_data_global = {};
-    var permalinkParams = {};
-    var permalinkObject;
+    let map;
+    let poi_layer;
+    let nominatim_data_global = {};
+    const permalinkParams = {};
+    let permalinkObject;
 
     window.useUserKey = function (key) {
         if (related_tags.indexOf(key) === -1) { /* Add the new key to related_tags. */
-            var opt = document.createElement('option');
+            const opt = document.createElement('option');
             opt.value = key;
             opt.innerHTML = key;
-            var select = document.getElementById('tag_selector_input');
+            const select = document.getElementById('tag_selector_input');
             select.appendChild(opt);
             related_tags.push(key);
         }
@@ -77,13 +77,13 @@ function createMap() {
         permalinkObject.updateLink();
     };
 
-    var OHMode = 0;
-    var OSM_tags = []; // keys for the values which should be evaluated.
+    let OHMode = 0;
+    let OSM_tags = []; // keys for the values which should be evaluated.
 
-    var prmarr = window.location.search.replace( "?", "" ).split("&");
-    var params = {};
-    for ( var i = 0; i < prmarr.length; i++) {
-        var tmparr = prmarr[i].split("=");
+    const prmarr = window.location.search.replace( "?", "" ).split("&");
+    const params = {};
+    for ( let i = 0; i < prmarr.length; i++) {
+        const tmparr = prmarr[i].split("=");
         params[tmparr[0]] = tmparr[1];
     }
 
@@ -116,7 +116,7 @@ function createMap() {
     /* {{{ Patch updateLink function */
     OpenLayers.Control.Permalink.prototype.updateLink = function() {
         permalinkObject = this;
-        var href=this.base;
+        let href=this.base;
         if(href.indexOf('?')!=-1){
             href=href.substring(0,href.indexOf('?'));
         }
@@ -155,8 +155,8 @@ function createMap() {
         reftime: new Date(),
 
         createHtmlFromData: function (data) {
-            var h_icon = '<img src="' + this.getIconUrl(data) + '" alt=""/>';
-            var h_name = this.html(data.name||data.ref||data.barrier||data.operator||data.shop||data.amenity||data.craft||data.id);
+            const h_icon = '<img src="' + this.getIconUrl(data) + '" alt=""/>';
+            let h_name = this.html(data.name||data.ref||data.barrier||data.operator||data.shop||data.amenity||data.craft||data.id);
             if (typeof data.cuisine == 'string') {
                 h_name += ' (cuisine: ' + data.cuisine + ')';
             }
@@ -164,7 +164,7 @@ function createMap() {
                 h_name = 'barrier: ' + h_name;
             }
 
-            var text = '<h3>'+h_icon+'&#160;'+h_name+'</h3>\n';
+            let text = '<h3>'+h_icon+'&#160;'+h_name+'</h3>\n';
             text += '<div class="v">'+this.html(data._oh_value)+'</div>';
 
             this.evaluateOH(data);
@@ -172,7 +172,7 @@ function createMap() {
             if (data._oh_state == 'error' || data._oh_state == 'na') {
                 text += '<div class="e">'+data._oh_object+'</div>';
             } else {
-                    var t= data._it_object.getComment() || '';
+                    const t= data._it_object.getComment() || '';
 
                     switch (data._it_object.getStateString(true)) {
                     case 'open':    text+='<b class="o">open @ '   +this.reftime.toLocaleString()+'<br/>'+t+'</b>'; break;
@@ -180,14 +180,14 @@ function createMap() {
                     case 'unknown': text+='<b class="u">unknown @ '+this.reftime.toLocaleString()+'<br/>'+t+'</b>'; break;
                     }
 
-                var prettified = data._oh_object.prettifyValue();
+                const prettified = data._oh_object.prettifyValue();
 
                 if (data._oh_value != prettified)
                     text += '<br/>' + i18next.t('texts.prettified value', {
                             copyFunc: 'javascript:Evaluate(null, null, \'' + data._oh_value + '\')',
                         }) + ': <div class="v">'+prettified+'</div>';
 
-                var warnings = data._oh_object.getWarnings();
+                const warnings = data._oh_object.getWarnings();
                 if (warnings.length > 0)
                     text += '<br/>Warnings: <div class="v">'+warnings.join('<br/>\n')+'</div>';
 
@@ -195,20 +195,20 @@ function createMap() {
                 text += OpeningHoursTable.drawTableAndComments(data._oh_object, data._it_object, this.reftime);
             }
 
-            var rows=[];
-            for (var tag in data) {
+            const rows=[];
+            for (const tag in data) {
                 if (data[tag] == '') continue;
                 switch (tag) {
                 case 'id': case '_id': case 'lat': case 'lon': case 'created_by':
                 case '_oh_value': case '_oh_state': case '_oh_object': case '_it_object':
                     continue;
                 }
-                var val=this.html(data[tag]);
+                let val=this.html(data[tag]);
                 if (/^https?:\/\//.test(val)) {
-                    var res = [];
-                    var list=data[tag].split (';');
-                    for (var i=0; i<list.length;i++) {
-                        var ele=this.html(OpenLayers.String.trim(list[i]));
+                    const res = [];
+                    const list=data[tag].split (';');
+                    for (let i=0; i<list.length;i++) {
+                        const ele=this.html(OpenLayers.String.trim(list[i]));
                         res.push ('<a target="_blank" href="' + ele+'">'+ele+'</a>');
                     }
                     val=res.join('; ');
@@ -223,11 +223,11 @@ function createMap() {
 
         // Copy past from js/popupmarker.js to change the translation.
         createHtmlFromList: function (list) {
-            var items = [];
-            var clusters = [];
-            var nItems=0;
-            var limit = this.clusterLimit && this.clusterLimit<list.length ? this.clusterLimit : list.length;
-            for (var i=0; i<list.length; i++) {
+            let items = [];
+            const clusters = [];
+            let nItems=0;
+            const limit = this.clusterLimit && this.clusterLimit<list.length ? this.clusterLimit : list.length;
+            for (let i=0; i<list.length; i++) {
                 if (list[i]._csize || list[i].cluster) {
                     clusters.push (this.createHtmlFromData(list[i]));
                 } else {
@@ -295,14 +295,14 @@ function createMap() {
                 this.updateKeyValues();
             }
 
-            var xml = this.overpassQL(this.keyValues);
-            var url = 'https://overpass-api.de/api/interpreter?&data=' + encodeURIComponent(xml);
+            const xml = this.overpassQL(this.keyValues);
+            const url = 'https://overpass-api.de/api/interpreter?&data=' + encodeURIComponent(xml);
 
-            var self = this;
+            const self = this;
 
             // AbortController for timeout handling
-            var controller = new AbortController();
-            var timeoutId = setTimeout(function() {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(function() {
                 controller.abort();
             }, 30000); // 30 second timeout
 
@@ -343,27 +343,27 @@ function createMap() {
         overpassQL: function (keyvalues) {
             if (!(keyvalues instanceof Array)) keyvalues = [keyvalues];
 
-            var bbox = this.map.getExtent()
+            const bbox = this.map.getExtent()
                 .transform(this.map.getProjectionObject(), this.map.displayProjection);
 
             if (Object.keys(nominatim_data_global).length === 0) {
-                var nominatim_query = OpenLayers.String.format('&lat=${top}&lon=${left}', bbox);
+                const nominatim_query = OpenLayers.String.format('&lat=${top}&lon=${left}', bbox);
                 this.updateNominatimData(nominatim_query);
             }
 
-            var bboxQuery = OpenLayers.String.format (
+            const bboxQuery = OpenLayers.String.format (
                 '[bbox:${bottom},${left},${top},${right}]',
                 bbox);
 
-            var components = [];
-            for (var i in keyvalues) {
-                var key = keyvalues[i];
+            const components = [];
+            for (const i in keyvalues) {
+                const key = keyvalues[i];
                 components.push("node['" + key + "'];");
                 components.push("way['" + key + "'];");
                 components.push("relation['" + key + "'];");
             }
 
-            var OverpassQL = '[out:json][timeout:3]' + bboxQuery + ';(' + components.join('') + ');out body center 1000;';
+            const OverpassQL = '[out:json][timeout:3]' + bboxQuery + ';(' + components.join('') + ');out body center 1000;';
 
             return OverpassQL;
         },
@@ -371,7 +371,7 @@ function createMap() {
 
         evaluateOH: function (data) {
             if (typeof data._oh_value === 'undefined' && typeof data._oh_state === 'undefined') {
-                for (var i=0; i < OSM_tags.length; i++) {
+                for (let i=0; i < OSM_tags.length; i++) {
                     if (typeof data[OSM_tags[i]] === 'string') {
                         data._oh_key = OSM_tags[i];
                         data._oh_value = data[OSM_tags[i]];
@@ -384,7 +384,7 @@ function createMap() {
                     return data._oh_state;
                 }
 
-                var crashed = true;
+                let crashed = true;
                 if (["collection_times", "service_times"].includes(data._oh_key)) {
                     OHMode = 2;
                 }
@@ -445,15 +445,15 @@ function createMap() {
                 return;
             }
 
-            var elements = data.elements;
+            const elements = data.elements;
             if (!elements) {
                 alert ('Missing "elements" in overpassQL json data.');
                 return;
             }
             this.erase(true);
 
-            for (var i in elements) {
-                var element = elements[i];
+            for (const i in elements) {
+                const element = elements[i];
                 var data = element.tags;
                 if (!data) data = {};
                 if (element.id) {
@@ -487,7 +487,7 @@ function createMap() {
         //    Update keyValues
         //------------------------------------------------------------
         updateKeyValues: function () {
-            var key = related_tags[document.getElementById('tag_selector_input').selectedIndex];
+            const key = related_tags[document.getElementById('tag_selector_input').selectedIndex];
             this.keyValues = [ key ];
             OSM_tags = [ key ];
             permalinkParams.tags = key;
@@ -551,7 +551,7 @@ function initializeUI() {
     document.documentElement.setAttribute('lang', i18next.language);
 
     // Add theme toggle button and language selector
-    var headerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;">';
+    let headerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;">';
     headerHTML += '<h1>' + i18next.t('texts.heading map') + '</h1>';
     headerHTML += '<div style="display: flex; gap: 1em; align-items: center;">';
     headerHTML += '<button id="theme-toggle" style="padding: 0.5em 1em; cursor: pointer; border: 1px solid #ccc; background: transparent; border-radius: 4px;" title="Toggle dark mode">🌓</button>';
@@ -561,13 +561,13 @@ function initializeUI() {
 
     // Language selector handler
     document.getElementById('language-select').addEventListener('change', function(e) {
-        var selectedLang = e.target.value;
+        const selectedLang = e.target.value;
         document.documentElement.setAttribute('lang', selectedLang);
         changeLanguage(selectedLang);
     });
 
     // Initialize theme
-    var savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         document.body.setAttribute('data-theme', savedTheme);
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -576,8 +576,8 @@ function initializeUI() {
 
     // Theme toggle handler
     document.getElementById('theme-toggle').addEventListener('click', function() {
-        var currentTheme = document.body.getAttribute('data-theme');
-        var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         document.body.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
     });
@@ -595,13 +595,13 @@ function initializeUI() {
     // Tag selector
     document.getElementById('tag_selector_label').innerHTML = '<strong>' + i18next.t('texts.config POIs') + '</strong>:';
 
-    var select = document.getElementById('tag_selector_input');
-    for (var tag_ind = 0; tag_ind < related_tags.length; tag_ind++) {
+    const select = document.getElementById('tag_selector_input');
+    for (let tag_ind = 0; tag_ind < related_tags.length; tag_ind++) {
         select.options[select.options.length] = new Option(related_tags[tag_ind], select.options.length);
     }
 
     // Map description
-    var desc = i18next.t('texts.map is showing', { wikiUrl: wiki_url });
+    let desc = i18next.t('texts.map is showing', { wikiUrl: wiki_url });
     desc += '<ul>';
     desc += '<li>' + i18next.t('words.green')  + ': ' + i18next.t('texts.open now') + '</li>';
     desc += '<li>' + i18next.t('words.yellow') + ': ' + i18next.t('texts.unknown now') + '</li>';
@@ -612,11 +612,11 @@ function initializeUI() {
     document.getElementById('map_description').innerHTML = desc;
 
     // Filter selector
-    var filterHTML = '<p>' + i18next.t('texts.map filter');
+    let filterHTML = '<p>' + i18next.t('texts.map filter');
     filterHTML += '<form name="filter_form">';
-    var showFilterOptions = ['none', 'error', 'warnOnly', 'errorOnly', 'open', 'unknown', 'closed', 'openOrUnknown'];
-    for (var i = 0; i < showFilterOptions.length; i++) {
-        var filter_id = showFilterOptions[i];
+    const showFilterOptions = ['none', 'error', 'warnOnly', 'errorOnly', 'open', 'unknown', 'closed', 'openOrUnknown'];
+    for (let i = 0; i < showFilterOptions.length; i++) {
+        const filter_id = showFilterOptions[i];
         filterHTML += '<label><input type="radio" name="filter"'
                 + ' value="' + filter_id + '"'
                 + ' id="filter_form_' + filter_id + '"'
@@ -627,7 +627,7 @@ function initializeUI() {
     document.getElementById('filter_form_none').checked = true;
 
     // Footer
-    var footer = '<p>';
+    let footer = '<p>';
     footer += i18next.t('texts.data source', {
         APIaTag:      '<a href="https://overpass-api.de/">Overpass API</a>',
         OSMaTag:      '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>',

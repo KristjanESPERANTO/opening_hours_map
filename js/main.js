@@ -494,40 +494,33 @@ function createMap() {
         },
 
         filter: function(data) {
+            const state = this.evaluateOH(data);
+            const hasError = state == 'error';
+            const oh = data._oh_object;
+            const it = data._it_object;
+            const hasWarnings = !hasError && oh && typeof oh.getWarnings === 'function'
+                ? oh.getWarnings().length > 0
+                : false;
+            const canIterate = !hasError && it && typeof it.getState === 'function'
+                && typeof it.getUnknown === 'function';
+            const isOpen = canIterate ? it.getState() : false;
+            const isUnknown = canIterate ? it.getUnknown() : false;
+
             switch (permalinkParams.filter) {
                 case 'error':
-                    return this.evaluateOH(data) == 'error' || data._oh_object.getWarnings().length > 0;
-                    break;
+                    return hasError || hasWarnings;
                 case 'errorOnly':
-                    return this.evaluateOH(data) == 'error';
-                    break;
+                    return hasError;
                 case 'warnOnly':
-                    return this.evaluateOH(data) != 'error' && data._oh_object.getWarnings().length > 0;
-                    break;
+                    return hasWarnings;
                 case 'open':
-                    if (this.evaluateOH(data) == 'error')
-                        return false;
-                    else
-                        return data._it_object.getState();
-                    break;
+                    return isOpen;
                 case 'unknown':
-                    if (this.evaluateOH(data) == 'error')
-                        return false;
-                    else
-                        return data._it_object.getUnknown();
-                    break;
+                    return isUnknown;
                 case 'closed':
-                    if (this.evaluateOH(data) == 'error')
-                        return false;
-                    else
-                        return !data._it_object.getState() && !data._it_object.getUnknown();
-                    break;
+                    return canIterate && !isOpen && !isUnknown;
                 case 'openOrUnknown':
-                    if (this.evaluateOH(data) == 'error')
-                        return false;
-                    else
-                        return data._it_object.getState() || data._it_object.getUnknown();
-                    break;
+                    return isOpen || isUnknown;
                 case 'none':
                 default:
                     return true;

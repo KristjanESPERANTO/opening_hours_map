@@ -99,15 +99,13 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     locateMarker: null,
     selectId: null,
     classByType: null,
-    undefinedMarkerIconUrl: null,
-    undefinedMarkerIconScale: 0.5,
     fixBrokenJsonp: false,
 
     //----------------------------------------------------------------------
     //    Init
     //----------------------------------------------------------------------
 
-    initialize: function(name, options) {
+    initialize: function() {
 
         OpenLayers.Layer.Markers.prototype.initialize.apply(this,arguments);
 
@@ -118,7 +116,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         this.loadingUrl        = null;
         this.nextId        = 0;
 
-        if (this.opacity ) { this.setOpacity(opacity); }
+        if (this.opacity ) { this.setOpacity(this.opacity); }
         if (this.minZoom ) { this.zoomSteps = 1<<this.minZoom; }
 
         if (!window.callbackCounter) { window.callbackCounter = 0; }
@@ -162,7 +160,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (this.locateMarker) {
 
-            var marker = this.locateMarker;
+            const marker = this.locateMarker;
 
             this.cancelLocate();
 
@@ -198,7 +196,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             } else if (this.popupOnClick && (this.map.getZoom() >= this.minZoom || !this.hideMarkerBelowMinZoom)) {
 
-                marker = this.findNearestMarker (ev.xy, this.clickDistance);
+                const marker = this.findNearestMarker (ev.xy, this.clickDistance);
                 if (marker) { this.markerClick.apply (marker, [ev]); }
             }
         }
@@ -301,17 +299,17 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             }
             if (this.location && this.createUrlForBounds) {
                 if (this.map.zoom >= this.minZoom) {
-                    for (var i=0; i<this.markers.length; i++) {
+                    for (let i=0; i<this.markers.length; i++) {
                         this.markers[i].display(this.markers[i].data._csize<=0);
                     }
                 } else {
-                    for (i=0; i<this.markers.length; i++) {
+                    for (let i=0; i<this.markers.length; i++) {
                         this.markers[i].display(this.markers[i].data._csize>0);
                     }
                 }
             }
             if (!this.location && this.createUrlForBounds && this.hideMarkerBelowMinZoom) {
-                for (i=0; i<this.markers.length; i++) {
+                for (let i=0; i<this.markers.length; i++) {
                     this.markers[i].display(this.map.zoom >= this.minZoom);
                 }
             }
@@ -485,7 +483,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         return null;
     },
 
-    createMarker: function (data, isnew) {
+    createMarker: function (data) {
 
         if (!data) { return null; }
         if (this.filter && !this.filter(data)) { return null; }
@@ -521,8 +519,6 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         marker.icon.imageDiv.className='olPopupMarker';
 
         if (data['~group']) {
-
-            marker.icon.imageDiv;
             OpenLayers.Element.addClass (marker.icon.imageDiv, data['~group']);
         }
 
@@ -530,8 +526,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    link
         //---------------------------------------------------------
 
-        marker.layer=this;
-        marker.data =data;
+        marker.layer = this;
+        marker.data = data;
 
         //---------------------------------------------------------
         //    handle site relations
@@ -544,53 +540,24 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             const groupLayer     = this;
 
             marker.icon.imageDiv.onmouseover = function() {
-
-                const replacementIcon = null;
-
-                for (const i in groupMemberIds) {
-
+                for (let i = 0; i < groupMemberIds.length; i++) {
                     const memberId = groupMemberIds[i];
                     const memberMarker = groupLayer.getMarkerByDataId(memberId);
 
                     if (!memberMarker) continue;
-                    OpenLayers.Element.addClass (memberMarker.icon.imageDiv, groupClass);
-
-                    if (memberMarker.icon.url!=marker.layer.undefinedMarkerIconUrl) continue;
-
-                    //---------------------------------
-                    //    replace "unknown" icons
-                    //    HACK specifically for histmap
-                    //---------------------------------
-
-                    memberMarker.icon.url = marker.layer.createIconUrlFromParams(
-                        iconParamsFromData(marker.data, false),
-                        hasImageFromData(memberMarker.data));
-
-                    memberMarker.icon.size = new OpenLayers.Size(
-                        marker.layer.undefinedMarkerIconScale*marker.icon.size.w,
-                        marker.layer.undefinedMarkerIconScale*marker.icon.size.h);
-
-                    memberMarker.icon.offset = new OpenLayers.Pixel(
-                        marker.layer.undefinedMarkerIconScale*marker.icon.offset.w,
-                        marker.layer.undefinedMarkerIconScale*marker.icon.offset.h);
-
-                    memberMarker.icon.calculateOffset = marker.icon.calculateOffset;
-
-                    memberMarker.icon.draw();
+                    OpenLayers.Element.addClass(memberMarker.icon.imageDiv, groupClass);
                 }
             };
 
             marker.icon.imageDiv.onmouseout = function(evt) {
-
                 if (evt.shiftKey || evt.ctrlKey) return;
 
-                for (const i in groupMemberIds) {
-
+                for (let i = 0; i < groupMemberIds.length; i++) {
                     const memberId = groupMemberIds[i];
-                    const marker = groupLayer.getMarkerByDataId(memberId);
+                    const groupMarker = groupLayer.getMarkerByDataId(memberId);
 
-                    if (!marker) continue;
-                    OpenLayers.Element.removeClass (marker.icon.imageDiv, groupClass);
+                    if (!groupMarker) continue;
+                    OpenLayers.Element.removeClass(groupMarker.icon.imageDiv, groupClass);
                 }
             };
         }
@@ -778,7 +745,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         return false;
     },
 
-    markerMouseOut: function (ev) {
+    markerMouseOut: function () {
 
         if (!this.layer.currentMarker) {
             this.layer.destroyPopup();
@@ -839,7 +806,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             const limit = this.clusterSize/Math.pow(2,this.map.zoom)*156543;
 
-            for (var i=0; i<this.markers.length; i++) {
+            for (let i=0; i<this.markers.length; i++) {
 
                 const member=this.markers[i];
                 if (Math.abs(marker.lonlat.lat-member.lonlat.lat)>limit) {
@@ -873,7 +840,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             (cluster.length>=2 ? this.createHtmlFromList(cluster) : this.createHtmlFromData(marker.data)),
             marker.icon,
             true,
-            function (e) {this.layer.destroyPopup();}
+            function () {this.layer.destroyPopup();}
         );
 
         this.currentPopup.layer = this;
@@ -930,8 +897,9 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             if (this.checkEdit (marker.data)===true && !buttons.length) {
 
+                let button;
                 if (this.enableUpdate) {
-                    var button = document.createElement ('button');
+                    button = document.createElement ('button');
                     button.innerHTML = this.labelEdit;
                     button.className = 'edit';
                     div.appendChild (button);
@@ -955,9 +923,9 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 buttons = div.getElementsByTagName('button');
             }
 
-            for (i=0; i<buttons.length; i++) {
+            for (let i=0; i<buttons.length; i++) {
 
-                button = buttons[i];
+                const button = buttons[i];
                 button.marker = marker;
 
                 switch (button.className) {
@@ -987,7 +955,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     //    Popup - edit
     //----------------------------------------------------------------------
 
-    createEditPopup: function (marker, isnew) {
+    createEditPopup: function (marker) {
 
         this.destroyPopup ();
 
@@ -1003,7 +971,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             this.createForm (marker.data),
             marker.icon,
             true,
-            function (e) {this.layer.destroyPopup();}
+            function () {this.layer.destroyPopup();}
         );
 
         this.currentPopup.layer = this;
@@ -1063,10 +1031,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         };
 
         const inputs = this.getElementsByTagName('input');
-        for (var i=0; i<inputs.length; i++) {
+        for (let i=0; i<inputs.length; i++) {
 
             const input = inputs[i];
-            var value = input.value;
+            let value = input.value;
 
             switch (input.type) {
             case 'checkbox':
@@ -1083,19 +1051,19 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
 
         const selects = this.getElementsByTagName('select');
-        for (i=0; i<selects.length; i++) {
+        for (let i=0; i<selects.length; i++) {
 
             const select = selects[i];
-            value = select.selectedIndex>=0 ?
+            const value = select.selectedIndex>=0 ?
                 select.options[select.selectedIndex].value : '';
             newData[select.name]=value;
         }
 
         const textareas = this.getElementsByTagName('textarea');
-        for (i=0; i<textareas.length; i++) {
+        for (let i=0; i<textareas.length; i++) {
 
             const textarea = textareas[i];
-            value    = OpenLayers.String.trim(textarea.value);
+            const value    = OpenLayers.String.trim(textarea.value);
             newData[textarea.name]=value;
         }
 
@@ -1230,7 +1198,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (!this.temporaryIcon) { return; }
         const lonLat=this.map.getLonLatFromViewPortPx(ev.xy);
-        var px = px=this.map.getLayerPxFromLonLat (lonLat);
+        const px=this.map.getLayerPxFromLonLat (lonLat);
         this.temporaryIcon.moveTo (px);
     },
 
@@ -1337,8 +1305,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         if (!this.fieldTitles) {
             this.fieldTitles = {};
             for (const i in names) {
-                var name = names[i];
-                this.fieldTitles[name]=name;
+                const fieldName = names[i];
+                this.fieldTitles[fieldName]=fieldName;
             }
         }
 
@@ -1349,11 +1317,11 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             const values = OpenLayers.String.trim(lines[lineno]).split(this.fieldSeparator);
             if (values.length<=1) { continue; }
             for (let col=0; values.length>col; col++) {
-                name = names[col];
-                if (name) {
-                    object[name] = values[col];
+                const colName = names[col];
+                if (colName) {
+                    object[colName] = values[col];
                 } else {
-                    tagval=values[col].split('=');
+                    const tagval=values[col].split('=');
                     if (tagval.length >= 2 && tagval[0]) {
                         const tag = tagval.shift();
                         const val = tagval.join('=');
@@ -1372,7 +1340,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     //    Create Icon for marker
     //----------------------------------------------------------------------
 
-    createIconFromData: function (data) {
+    createIconFromData: function () {
 
         return this.icon ? this.icon.clone() : null;
     },
@@ -1411,7 +1379,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
 
         if (this.osmlinks) {
-            osmlinks = this.createOsmLinks(data);
+            const osmlinks = this.createOsmLinks(data);
             if (osmlinks) {
                 result.push ('<p>' + osmlinks + '</p>');
             }
@@ -1424,58 +1392,61 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     //    Editform
     //----------------------------------------------------------------------
 
-    createForm: function (data) {
+    createForm: function () {
 
         const result = [];
         result.push ('<form>');
         result.push ('<table>');
 
-        for (name in this.fieldTitles) {
+        for (const fieldName in this.fieldTitles) {
 
-            if (name=='id' || name=='lat' || name=='lon') {
+            if (fieldName=='id' || fieldName=='lat' || fieldName=='lon') {
                 continue;
             }
 
-            const hName = this.html (name);
-            const title = this.fieldTitles[name] || name;
-            const valueTitles = this.fieldValues[name];
-            var field;
+            const hName = this.html (fieldName);
+            const title = this.fieldTitles[fieldName] || fieldName;
+            const valueTitles = this.fieldValues[fieldName];
+            let field;
 
-            switch (this.fieldTypes[name]) {
+            switch (this.fieldTypes[fieldName]) {
 
-            case 'select':
-                var options = [];
-                for (var value in valueTitles) {
-                    var hTitle = this.html (valueTitles[value] || value);
+            case 'select': {
+                const options = [];
+                for (const value in valueTitles) {
+                    const hTitle = this.html (valueTitles[value] || value);
                     options.push ('<option value="' + this.html(value) + '">' + hTitle + '</option>');
                 }
                 field = '<select name="' + hName + '">\n' + options.join('\n') + '</select>';
                 break;
+            }
 
-            case 'radios':
-                choices = [];
-                for (value in valueTitles) {
-                    hTitle = this.html (valueTitles[value] || value);
+            case 'radios': {
+                const choices = [];
+                for (const value in valueTitles) {
+                    const hTitle = this.html (valueTitles[value] || value);
                     choices.push ('<label><input type="radio" name="' + hName + '" value="' + this.html(value) + '"/>' + hTitle + '</label> ');
                 }
                 field = choices.join('\n');
                 break;
+            }
 
             case 'textarea':
-                field = '<textarea name="'+this.html(name)+'"/></textarea>';
+                field = '<textarea name="'+this.html(fieldName)+'"/></textarea>';
                 break;
 
-            case 'checkbox':
-                hTitle = this.html (valueTitles && valueTitles['t'] || '');
-                field = '<input type="checkbox" name="'+this.html(name)+'" value="t"/>' + hTitle;
+            case 'checkbox': {
+                const hTitle = this.html (valueTitles && valueTitles['t'] || '');
+                field = '<input type="checkbox" name="'+this.html(fieldName)+'" value="t"/>' + hTitle;
                 break;
+            }
 
             case 'password':
-                field = '<input type="password" name="'+this.html(name)+'"/>';
+                field = '<input type="password" name="'+this.html(fieldName)+'"/>';
                 break;
 
             default:
-                field = '<input name="'+this.html(name)+'"/>';
+                field = '<input name="'+this.html(fieldName)+'"/>';
                 break;
             }
 
@@ -1483,9 +1454,9 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
 
         result.push ('</table>');
-        for (name in this.fieldTypes) {
-            if (this.fieldTypes[name]=='hidden') {
-                result.push ('<input type="hidden" name="'+this.html(name)+'"/>');
+        for (const fieldName in this.fieldTypes) {
+            if (this.fieldTypes[fieldName]=='hidden') {
+                result.push ('<input type="hidden" name="'+this.html(fieldName)+'"/>');
             }
         }
         result.push ('<button type="submit">Speichern</button>');
@@ -1497,10 +1468,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
     fillForm: function (form, data) {
 
         const inputs = form.getElementsByTagName ('input');
-        for (var i=0; i<inputs.length; i++) {
+        for (let i=0; i<inputs.length; i++) {
 
             const input = inputs[i];
-            var value = data[input.name] || '';
+            const value = data[input.name] || '';
             switch (input.type) {
             case 'radio':
             case 'checkbox':
@@ -1513,20 +1484,20 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
 
         const selects = form.getElementsByTagName ('select');
-        for (i=0; i<selects.length; i++) {
+        for (let i=0; i<selects.length; i++) {
 
             const select = selects[i];
-            value = data[select.name] || '';
+            const value = data[select.name] || '';
             let missing = !value && value !== 0;
             for (let j=0; j<select.options.length; j++) {
-                var option = select.options[j];
+                const option = select.options[j];
                 if (option.value == value) {
                     option.selected = true;
                     missing = false;
                 }
             }
             if (missing) {
-                option = document.createElement('option');
+                const option = document.createElement('option');
                 option.value=value;
                 option.innerHTML = value;
                 select.appendChild (option);
@@ -1535,19 +1506,19 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         }
 
         const textareas = form.getElementsByTagName ('textarea');
-        for (i=0; i<textareas.length; i++) {
+        for (let i=0; i<textareas.length; i++) {
 
             const textarea = textareas[i];
-            value = data[textarea.name] || '';
+            const value = data[textarea.name] || '';
             textarea.value = value.split('\034').join('\n');
         }
     },
 
-    checkData: function (data) {
+    checkData: function () {
         return 'checkData() missing.';
     },
 
-    checkEdit: function (data) {
+    checkEdit: function () {
         return true;
     },
 
@@ -1562,7 +1533,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             if (tag=='wikipedia') {
                 const lang_lemma = text.match(/^(\w\w):(.+)$/);
                 if (lang_lemma) {
-                    var html_lemma =
+                    const html_lemma =
                 this.html(lang_lemma[2].split('\040').join('_'));
                     return '<a target="_blank" href="http://' +
                         lang_lemma[1] + '.wikipedia.org/wiki/' + html_lemma +
@@ -1574,7 +1545,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 const wiki_lang = tag.match(/^wikipedia:(\w\w)$/);
 
                 if (wiki_lang) {
-                    html_lemma = this.html(text);
+                    const html_lemma = this.html(text);
                     return '<a target="_blank" href="http://' +
                         wiki_lang[1] + '.wikipedia.org/wiki/' + html_lemma +
                         '">' + html_lemma + '</a>';
@@ -1590,7 +1561,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 const interwiki = text.match (/^(File:.*\S)/);
 
                 if (interwiki) {
-                    html_interwiki = this.html (interwiki[1]);
+                    const html_interwiki = this.html (interwiki[1]);
                     return '<a target="_blank" href="http://www.wikipedia.org/wiki/' +
                         html_interwiki.replace(/\040/g,'_') + '">' +
                             html_interwiki + '</a>';
@@ -1603,21 +1574,21 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
             } else if (tag=='~in') {
 
-                var result = [];
+                const osmResult = [];
                 const rels = text.split(/[,\s]+/);
                 for (const r in rels) {
 
                     const rel=rels[r];
                     const id=rel.substr(1);
-                    result.push (
+                    osmResult.push (
     '<a target="_blank" href="http://www.openstreetmap.org/relation/' + id + '">' + rel + '</a>');
                 }
-                return result.join(', ');
+                return osmResult.join(', ');
             }
         }
 
         const list=(text+'').split (';');
-        var result=[];
+        const result=[];
         for (let i=0; i<list.length;i++) {
             const value = this.html (OpenLayers.String.trim (list[i]));
             if (value.substr (0,7)=='http://' || value.substr (0,8)=='https://') {
@@ -1686,9 +1657,10 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
     createOsmLinks: function (data, argId) {
 
+        let id   = argId ? argId : null;
         const osm = (id||data.id||'').match(/^([nwr])([1-9][0-9]*)$/);
         const type = osm ? {n:'node',r:'relation',w:'way'}[osm[1]] : null;
-        var id   = argId ? argId : osm ? osm[2] : null;
+        id   = argId ? argId : osm ? osm[2] : null;
 
         let l=parseFloat(data.lon)-0.0001;
         let b=parseFloat(data.lat)-0.0002;
@@ -1736,7 +1708,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    wikipedia = LANG : LEMMA
         //------------------------------------------------------
 
-        match = (data.wikipedia||'').match(/^([a-z]+):([^\/;]*[^\/;\s])([;\s].*)?$/);
+        let match = (data.wikipedia||'').match(/^([a-z]+):([^/;]*[^/;\s])([;\s].*)?$/);
         if (match) {
             return 'http://' + match[1] + '.wikipedia.org/wiki/' +
                 match[2].replace(/\040/g, '_');
@@ -1747,7 +1719,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
         //    wikipedia = LANG.wikipedia.org/wiki/LEMMA
         //------------------------------------------------------
 
-        match = (data.wikipedia||'').match(/^(https?:\/\/)?(\w+\.wikipedia\.org\/wiki\/[^\/;]*[^\/;\s])([;\s].*)?$/);
+        match = (data.wikipedia||'').match(/^(https?:\/\/)?(\w+\.wikipedia\.org\/wiki\/[^/;]*[^/;\s])([;\s].*)?$/);
         if (match) { return 'http://' + match[2]; }
 
         //------------------------------------------------------
@@ -1764,7 +1736,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             //    wikipedia : LANG = LEMMA
             //----------------------------------------------
 
-            valueMatch = data[tag].match(/^([^\/;]*[^\/;\s])\s*$/);
+            let valueMatch = data[tag].match(/^([^/;]*[^/;\s])\s*$/);
             if (valueMatch) {
                 return 'http://' + tagMatch[1] + '.wikipedia.org/wiki/' +
                     valueMatch[1].replace(/\040/g, '_');
@@ -1775,7 +1747,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             //    wikipedia : LANG = LANG.wikipedia.org/wiki/LEMMA
             //----------------------------------------------
 
-            valueMatch = data[tag].match(/^(https?:\/\/)?(\w+\.wikipedia\.org\/wiki\/[^;\s\/]+)([\s;].*)?$/);
+            valueMatch = data[tag].match(/^(https?:\/\/)?(\w+\.wikipedia\.org\/wiki\/[^;\s/]+)([\s;].*)?$/);
             if (valueMatch) {
                 return 'http://' + valueMatch[2];
             }
@@ -1845,7 +1817,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
 
         if (this.region) {
             let count=0;
-            for (var i in this.markers) {
+            for (const i in this.markers) {
                 if (!this.markers[i].data.region) {
                     continue;
                 }
@@ -1858,7 +1830,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             if (count) { return bounds; }
         }
 
-        for (i in this.markers) {
+        for (const i in this.markers) {
             bounds.extend (this.markers[i].lonlat);
         }
         return bounds;
@@ -1879,8 +1851,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             const fov=tag.split('.');
             let val=OpenLayers.String.trim(params[tag]);
 
-            var field = fov[0];
-            var op    = fov[1];
+            const field = fov[0];
+            let op    = fov[1];
             if (op=="value") { continue; }
             if (op=="op") { op = val; val= params[field+".value"]; }
             if (!op || val===null || val==='') { continue; }
@@ -1893,12 +1865,12 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             case "le":
             case "lt":
             case "ne":
-            case "slength":
-                var value=parseFloat(val);
+            case "slength": {
+                const value=parseFloat(val);
                 if (isNaN(value)) { continue; }
                 query.push (field+"."+op+"="+value);
                 continue;
-                break;
+            }
 
             case "seq":
             case "sge":
@@ -1913,7 +1885,6 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             case "sregex":
                 query.push (field+"."+op+"="+val);
                 continue;
-                break;
 
             case "isin":
             case "isinall":
@@ -1922,7 +1893,6 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
                 if (!sets[op][field]) { sets[op][field]=[]; }
                 sets[op][field].push(fov[2]?fov[2]:val);
                 continue;
-                break;
 
             default:
                 break;
@@ -1931,8 +1901,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers,{
             if (!confirm ("Fehler: field=["+field+"] op=["+op+"] val=["+val+"]")) { break; }
         }
 
-        for (op in sets) {
-            for (field in sets[op]) {
+        for (const op in sets) {
+            for (const field in sets[op]) {
                 query.push (field+"."+op+"="+sets[op][field].join(","));
             }
         }

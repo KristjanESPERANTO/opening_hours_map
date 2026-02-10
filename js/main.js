@@ -1,5 +1,4 @@
 const repo_url = 'https://github.com/opening-hours/opening_hours_map';
-const html_url = 'http://openingh.openstreetmap.de/';
 const wiki_url = 'https://wiki.openstreetmap.org/wiki/Key:opening_hours';
 const evaluation_tool_url = 'evaluation_tool/';
 
@@ -24,7 +23,7 @@ if (!document.onLoadFunctions) {
     window.onload = function () { for (let i=0; document.onLoadFunctions.length>i;i++) document.onLoadFunctions[i](); }
 }
 
-
+// eslint-disable-next-line no-unused-vars -- Called from HTML popup link
 function Evaluate(number, reset, value) {
     window.open(evaluation_tool_url + '?EXP='+encodeURIComponent(value), '_blank');
 }
@@ -45,7 +44,7 @@ function editPopupContent(content, lat, lon, type, id, oh_value) {
 
 function createMap() {
 
-    let map;
+    const map = new OpenLayers.Map ('map', {controls:[]});
     let poi_layer;
     let nominatim_data_global = {};
     const permalinkParams = {};
@@ -103,11 +102,6 @@ function createMap() {
     useUserKey(OSM_tags[0]);
 
     /* {{{ OpenLayers */
-    //----------------------------------------------------------------------------
-    //    Karte - der Name ('map') muss mit der id des <div> uebereinstimmen.
-    //----------------------------------------------------------------------------
-    map = new OpenLayers.Map ('map', {controls:[]});
-
     //----------------------------------------------------------------------------
     //    Default-Koordinatensystem fuer alle Controls
     //----------------------------------------------------------------------------
@@ -384,18 +378,18 @@ function createMap() {
                     return data._oh_state;
                 }
 
-                let crashed = true;
+                let crashed, oh, it;
                 if (["collection_times", "service_times"].includes(data._oh_key)) {
                     OHMode = 2;
                 }
                 try {
-                    var oh = new opening_hours(data._oh_value, nominatim_data_global, {
+                    oh = new opening_hours(data._oh_value, nominatim_data_global, {
                         'mode': OHMode,
                         // 'warnings_severity': 7,
                         /* Use default for now. See: https://github.com/opening-hours/opening_hours.js/issues/81 */
                         'locale': i18next.language,
                     });
-                    var it = oh.getIterator(this.reftime);
+                    it = oh.getIterator(this.reftime);
                     crashed = false;
                 } catch (err) {
                     crashed = err;
@@ -420,7 +414,7 @@ function createMap() {
         lastLon: undefined,
         poi_data: undefined,
 
-        createMarkerFromData: function(elements) {
+        createMarkerFromData: function() {
         },
 
         /* FIXME */
@@ -454,21 +448,21 @@ function createMap() {
 
             for (const i in elements) {
                 const element = elements[i];
-                var data = element.tags;
-                if (!data) data = {};
+                let elementData = element.tags;
+                if (!elementData) elementData = {};
                 if (element.id) {
-                    data.id = (element.type ? element.type.substr(0,1) : '') + element.id;
-                    data._id = element.id;
+                    elementData.id = (element.type ? element.type.substr(0,1) : '') + element.id;
+                    elementData._id = element.id;
                 }
-                data._type = element.type;
-                if (data._type == 'way' || data._type == 'relation') {
-                    data.lat = element.center.lat;
-                    data.lon = element.center.lon;
+                elementData._type = element.type;
+                if (elementData._type == 'way' || elementData._type == 'relation') {
+                    elementData.lat = element.center.lat;
+                    elementData.lon = element.center.lon;
                 } else {
-                    data.lat = element.lat;
-                    data.lon = element.lon;
+                    elementData.lat = element.lat;
+                    elementData.lon = element.lon;
                 }
-                this.createMarker (data);
+                this.createMarker (elementData);
             }
 
             if (typeof elements[0] !== 'undefined' && (typeof this.lastLat === 'undefined'

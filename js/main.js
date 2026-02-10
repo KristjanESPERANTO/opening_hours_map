@@ -305,9 +305,9 @@ function createMap() {
                     clearTimeout(timeoutId);
                     if (!response.ok) {
                         if (response.status == 504 || response.status == 429) {
-                            console.warn('Overpass API timeout or rate limit (status ' + response.status + ')');
+                            console.warn(`Overpass API: ${response.status === 504 ? 'Timeout' : 'Rate limit exceeded'} (HTTP ${response.status})`);
                         } else {
-                            console.error('Overpass API request failed with status:', response.status);
+                            console.error(`Overpass API: Request failed (HTTP ${response.status})`);
                         }
                         return null;
                     }
@@ -322,9 +322,9 @@ function createMap() {
                 .catch(function(error) {
                     clearTimeout(timeoutId);
                     if (error.name === 'AbortError') {
-                        console.warn('Overpass API request timed out');
+                        console.warn('Overpass API: Request timed out after 30 seconds');
                     } else {
-                        console.error('Overpass API request failed:', error);
+                        console.error('Overpass API: Request failed -', error.message || error);
                     }
                 });
         },

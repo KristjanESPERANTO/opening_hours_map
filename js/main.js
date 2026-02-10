@@ -18,11 +18,6 @@ const related_tags = [
     // 'fee',
 ];
 
-if (!document.onLoadFunctions) {
-    document.onLoadFunctions = new Array();
-    window.onload = function () { for (let i=0; document.onLoadFunctions.length>i;i++) document.onLoadFunctions[i](); }
-}
-
 // eslint-disable-next-line no-unused-vars -- Called from HTML popup link
 function Evaluate(number, reset, value) {
     window.open(evaluation_tool_url + '?EXP='+encodeURIComponent(value), '_blank');

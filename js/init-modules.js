@@ -2,25 +2,22 @@
 import i18next from '../opening_hours.js/node_modules/i18next/dist/esm/i18next.bundled.js';
 import { resources, getUserSelectTranslateHTMLCode, changeLanguage, detectLanguage } from '../opening_hours.js/site/js/i18n-resources.js';
 import { OpeningHoursTable } from '../opening_hours.js/site/js/opening_hours_table.js';
-import { countryToLanguageMapping } from '../opening_hours.js/site/js/countryToLanguageMapping.js';
 
 // Make i18next globally available for inline scripts and other scripts
 window.i18next = i18next;
 
-// mapCountryToLanguage function wrapper for compatibility
-window.mapCountryToLanguage = function(country_code) {
-    if (typeof country_code === 'undefined') {
-        return 'en';
-    } else if (typeof country_code !== 'string') {
-        throw new Error('country_code parameter is of type ' + typeof country_code + ' but string is required.');
-    }
-    country_code = country_code.toLowerCase();
-    if (typeof countryToLanguageMapping[country_code] === 'string') {
-        return countryToLanguageMapping[country_code].split(',')[0];
-    } else {
-        return country_code;
-    }
-};
+// JOSM remote control function (defined here to avoid importing helpers.js which imports main.js)
+function josm(url_param) {
+    fetch(`http://localhost:8111/${url_param}`)
+        .then(response => {
+            if (!response.ok) {
+                alert(i18next.t('texts.JOSM remote conn error'));
+            }
+        })
+        .catch(() => {
+            alert(i18next.t('texts.JOSM remote conn error'));
+        });
+}
 
 // reverseGeocodeLocation function (adapted for compatibility with old callback-based API)
 window.reverseGeocodeLocation = function(query, on_success, on_error) {
@@ -72,6 +69,7 @@ i18next.init({
 window.getUserSelectTranslateHTMLCode = getUserSelectTranslateHTMLCode;
 window.changeLanguage = changeLanguage;
 window.OpeningHoursTable = OpeningHoursTable;
+window.josm = josm;
 
 // Signal that modules are loaded
 window.modulesLoaded = true;

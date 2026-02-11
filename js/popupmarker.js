@@ -37,7 +37,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
     // Assign ID if missing
     if (!data.id) {
       ++this.nextId;
-      data.id = "" + this.nextId;
+      data.id = `${this.nextId}`;
     }
 
     // Parse coordinates
@@ -197,7 +197,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
    * @returns {string} HTML content
    */
   createHtmlFromData: function (data) {
-    return "<div>Marker: " + this.html(data.id || "unknown") + "</div>";
+    return `<div>Marker: ${this.html(data.id || "unknown")}</div>`;
   },
 
   /**

@@ -26,9 +26,9 @@ window.reverseGeocodeLocation = function(query, on_success, on_error) {
     let params = 'format=json&zoom=5&addressdetails=1&email=ypid23@aol.de';
     if (query) {
         // Remove leading & if present
-        params += query.startsWith('&') ? query : '&' + query;
+        params += query.startsWith('&') ? query : `&${query}`;
     }
-    const nominatim_api_url_query = nominatim_api_url + '?' + params;
+    const nominatim_api_url_query = `${nominatim_api_url}?${params}`;
 
     fetch(nominatim_api_url_query)
         .then(response => {

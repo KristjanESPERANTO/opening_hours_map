@@ -35,6 +35,8 @@ export default defineConfig([
         rules: {
             "no-var": "error",
             "prefer-const": "error",
+            "prefer-template": "error",
+            "template-curly-spacing": ["error", "never"],
         },
     },
     {

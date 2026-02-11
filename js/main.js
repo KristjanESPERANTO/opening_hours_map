@@ -65,7 +65,7 @@ function createMap() {
     };
 
     permalinkParams.filter = OpenLayers.Util.getParameters().filter || 'none';
-    document.getElementById('filter_form_' + permalinkParams.filter).checked = true;
+    document.getElementById(`filter_form_${permalinkParams.filter}`).checked = true;
 
     window.applyNewFilter = function (myRadio) {
         permalinkParams.filter = myRadio.value;
@@ -106,7 +106,7 @@ function createMap() {
         if(href.indexOf('?')!=-1){
             href=href.substring(0,href.indexOf('?'));
         }
-        href+='?'+OpenLayers.Util.getParameterString(OpenLayers.Util.extend(this.createParams(), permalinkParams));
+        href+=`?${OpenLayers.Util.getParameterString(OpenLayers.Util.extend(this.createParams(), permalinkParams))}`;
         this.element.href=href;
     };
     /* }}} */
@@ -154,41 +154,41 @@ function createMap() {
         _reloadTimer: null,
 
         createHtmlFromData: function (data) {
-            const h_icon = '<img src="' + this.getIconUrl(data) + '" alt=""/>';
+            const h_icon = `<img src="${this.getIconUrl(data)}" alt=""/>`;
             let h_name = this.html(data.name||data.ref||data.barrier||data.operator||data.shop||data.amenity||data.craft||data.id);
             if (typeof data.cuisine == 'string') {
-                h_name += ' (cuisine: ' + data.cuisine + ')';
+                h_name += ` (cuisine: ${data.cuisine})`;
             }
             if (typeof data.barrier == 'string') {
-                h_name = 'barrier: ' + h_name;
+                h_name = `barrier: ${h_name}`;
             }
 
-            let text = '<h3>'+h_icon+'&#160;'+h_name+'</h3>\n';
-            text += '<div class="v">'+this.html(data._oh_value)+'</div>';
+            let text = `<h3>${h_icon}&#160;${h_name}</h3>\n`;
+            text += `<div class="v">${this.html(data._oh_value)}</div>`;
 
             this.evaluateOH(data);
 
             if (data._oh_state == 'error' || data._oh_state == 'na') {
-                text += '<div class="e">'+data._oh_object+'</div>';
+                text += `<div class="e">${data._oh_object}</div>`;
             } else {
                     const t= data._it_object.getComment() || '';
 
                     switch (data._it_object.getStateString(true)) {
-                    case 'open':    text+='<b class="o">open @ '   +this.reftime.toLocaleString()+'<br/>'+t+'</b>'; break;
-                    case 'closed':  text+='<b class="c">closed @ ' +this.reftime.toLocaleString()+'<br/>'+t+'</b>'; break;
-                    case 'unknown': text+='<b class="u">unknown @ '+this.reftime.toLocaleString()+'<br/>'+t+'</b>'; break;
+                    case 'open':    text+=`<b class="o">open @ ${this.reftime.toLocaleString()}<br/>${t}</b>`; break;
+                    case 'closed':  text+=`<b class="c">closed @ ${this.reftime.toLocaleString()}<br/>${t}</b>`; break;
+                    case 'unknown': text+=`<b class="u">unknown @ ${this.reftime.toLocaleString()}<br/>${t}</b>`; break;
                     }
 
                 const prettified = data._oh_object.prettifyValue();
 
                 if (data._oh_value != prettified)
-                    text += '<br/>' + i18next.t('texts.prettified value', {
-                            copyFunc: evaluation_tool_url + '?EXP=' + encodeURIComponent(data._oh_value),
-                        }) + ': <div class="v">'+prettified+'</div>';
+                    text += `<br/>${i18next.t('texts.prettified value', {
+                            copyFunc: `${evaluation_tool_url}?EXP=${encodeURIComponent(data._oh_value)}`,
+                        })}: <div class="v">${prettified}</div>`;
 
                 const warnings = data._oh_object.getWarnings();
                 if (warnings.length > 0)
-                    text += '<br/>Warnings: <div class="v">'+warnings.join('<br/>\n')+'</div>';
+                    text += `<br/>Warnings: <div class="v">${warnings.join('<br/>\n')}</div>`;
 
                 data._it_object.setDate(this.reftime);
                 text += OpeningHoursTable.drawTableAndComments(data._oh_object, data._it_object, this.reftime);
@@ -208,14 +208,14 @@ function createMap() {
                     const list=data[tag].split (';');
                     for (let i=0; i<list.length;i++) {
                         const ele=this.html(OpenLayers.String.trim(list[i]));
-                        res.push ('<a target="_blank" href="' + ele+'">'+ele+'</a>');
+                        res.push (`<a target="_blank" href="${ele}">${ele}</a>`);
                     }
                     val=res.join('; ');
                 }
-                rows.push ('<tr><td>'+this.html(tag)+'</td><td>'+val+'</td></tr>');
+                rows.push (`<tr><td>${this.html(tag)}</td><td>${val}</td></tr>`);
             }
 
-            if (rows.length>=1) text += '<table>'+rows.join('\n')+'</table>\n';
+            if (rows.length>=1) text += `<table>${rows.join('\n')}</table>\n`;
 
             return editPopupContent(text, data.lat, data.lon, data._type, data._id, data._oh_value);
         },
@@ -258,8 +258,8 @@ function createMap() {
         getIconUrl: function (data) {
             if (this.evaluateOH(data) != 'na') {
                 switch (data._oh_state) {
-                case 'ok': case 'warning': return 'img/circle_' + (data._it_object.getState() ? 'green' : (data._it_object.getUnknown() ? 'yellow' : 'red'))
-                       + (data._oh_state == 'warning' ? '_warn' : '') + '.png';
+                case 'ok': case 'warning': return `img/circle_${data._it_object.getState() ? 'green' : (data._it_object.getUnknown() ? 'yellow' : 'red')
+                        }${data._oh_state == 'warning' ? '_warn' : ''}.png`;
                 case 'error':   return 'img/circle_err.png';
                 default: return false;
                 }
@@ -304,7 +304,7 @@ function createMap() {
             }
 
             const xml = this.overpassQL(this.keyValues);
-            const url = 'https://overpass-api.de/api/interpreter?&data=' + encodeURIComponent(xml);
+            const url = `https://overpass-api.de/api/interpreter?&data=${encodeURIComponent(xml)}`;
 
             const self = this;
 
@@ -366,12 +366,12 @@ function createMap() {
             const components = [];
             for (const i in keyvalues) {
                 const key = keyvalues[i];
-                components.push("node['" + key + "'];");
-                components.push("way['" + key + "'];");
-                components.push("relation['" + key + "'];");
+                components.push(`node['${key}'];`);
+                components.push(`way['${key}'];`);
+                components.push(`relation['${key}'];`);
             }
 
-            const OverpassQL = '[out:json][timeout:3]' + bboxQuery + ';(' + components.join('') + ');out body center 1000;';
+            const OverpassQL = `[out:json][timeout:3]${bboxQuery};(${components.join('')});out body center 1000;`;
 
             return OverpassQL;
         },
@@ -484,7 +484,7 @@ function createMap() {
                 || Math.abs(this.lastLon - elements[0].lon) > 2)) {
 
                 // console.log("updateNominatimData inside query");
-                this.updateNominatimData('&osm_type=' + elements[0].type.substr(0,1).toUpperCase() + '&osm_id=' + elements[0].id);
+                this.updateNominatimData(`&osm_type=${elements[0].type.substr(0,1).toUpperCase()}&osm_id=${elements[0].id}`);
 
                 this.lastLat = elements[0].lat;
                 this.lastLon = elements[0].lon;
@@ -572,7 +572,7 @@ function initializeUI() {
 
     // Add theme toggle button and language selector
     let headerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;">';
-    headerHTML += '<h1>' + i18next.t('texts.heading map') + '</h1>';
+    headerHTML += `<h1>${i18next.t('texts.heading map')}</h1>`;
     headerHTML += '<div style="display: flex; gap: 1em; align-items: center;">';
     headerHTML += '<button id="theme-toggle" style="padding: 0.5em 1em; cursor: pointer; border: 1px solid #ccc; background: transparent; border-radius: 4px;" title="Toggle dark mode">🌓</button>';
     headerHTML += getUserSelectTranslateHTMLCode();
@@ -613,7 +613,7 @@ function initializeUI() {
     });
 
     // Tag selector
-    document.getElementById('tag_selector_label').innerHTML = '<strong>' + i18next.t('texts.config POIs') + '</strong>:';
+    document.getElementById('tag_selector_label').innerHTML = `<strong>${i18next.t('texts.config POIs')}</strong>:`;
 
     const select = document.getElementById('tag_selector_input');
     for (let tag_ind = 0; tag_ind < related_tags.length; tag_ind++) {
@@ -623,24 +623,24 @@ function initializeUI() {
     // Map description
     let desc = i18next.t('texts.map is showing', { wikiUrl: wiki_url });
     desc += '<ul>';
-    desc += '<li>' + i18next.t('words.green')  + ': ' + i18next.t('texts.open now') + '</li>';
-    desc += '<li>' + i18next.t('words.yellow') + ': ' + i18next.t('texts.unknown now') + '</li>';
-    desc += '<li>' + i18next.t('words.red')    + ': ' + i18next.t('texts.closed now') + '</li>';
-    desc += '<li>' + i18next.t('words.violet')    + ': ' + i18next.t('texts.error') + '</li>';
+    desc += `<li>${i18next.t('words.green')}: ${i18next.t('texts.open now')}</li>`;
+    desc += `<li>${i18next.t('words.yellow')}: ${i18next.t('texts.unknown now')}</li>`;
+    desc += `<li>${i18next.t('words.red')}: ${i18next.t('texts.closed now')}</li>`;
+    desc += `<li>${i18next.t('words.violet')}: ${i18next.t('texts.error')}</li>`;
     desc += '</ul>';
     desc += i18next.t('texts.warning', { sign: '<q>W</q>' });
     document.getElementById('map_description').innerHTML = desc;
 
     // Filter selector
-    let filterHTML = '<p>' + i18next.t('texts.map filter');
+    let filterHTML = `<p>${i18next.t('texts.map filter')}`;
     filterHTML += '<form name="filter_form">';
     const showFilterOptions = ['none', 'error', 'warnOnly', 'errorOnly', 'open', 'unknown', 'closed', 'openOrUnknown'];
     for (let i = 0; i < showFilterOptions.length; i++) {
         const filter_id = showFilterOptions[i];
-        filterHTML += '<label><input type="radio" name="filter"'
-                + ' value="' + filter_id + '"'
-                + ' id="filter_form_' + filter_id + '"'
-                + ' onclick="applyNewFilter(this)">' + i18next.t('texts.filter.' + filter_id) + '</input></label><br>';
+        filterHTML += `<label><input type="radio" name="filter"`
+                + ` value="${filter_id}"`
+                + ` id="filter_form_${filter_id}"`
+                + ` onclick="applyNewFilter(this)">${i18next.t(`texts.filter.${filter_id}`)}</input></label><br>`;
     }
     filterHTML += '</form></p>';
     document.getElementById('filter_selector').innerHTML = filterHTML;
@@ -648,11 +648,11 @@ function initializeUI() {
 
     // Footer
     let footer = '<p>';
-    footer += i18next.t('texts.data source', {
+    footer += `${i18next.t('texts.data source', {
         APIaTag:      '<a href="https://overpass-api.de/">Overpass API</a>',
         OSMaTag:      '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>',
         OSMStartaTag: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
-        }) + '<br />';
+        })}<br />`;
     footer += i18next.t('texts.this website', { url: repo_url, hoster: 'GitHub' });
     footer += '</p>';
     document.getElementById('footer').innerHTML = footer;

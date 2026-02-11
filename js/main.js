@@ -455,7 +455,7 @@ function createMap() {
 
             const elements = data.elements;
             if (!elements) {
-                alert ('Missing "elements" in overpassQL json data.');
+                alert ('Overpass API: Missing "elements" in response data');
                 return;
             }
             this.erase(true);

@@ -135,8 +135,19 @@ function createMap() {
     /* }}} */
 
     /* {{{ Base layers */
-    map.addLayer(new OpenLayers.Layer.OSM.Mapnik('Mapnik'));
-    map.addLayer(new OpenLayers.Layer.OSM.CyclOSM('CyclOSM'));
+    map.addLayer(new OpenLayers.Layer.OSM(
+        'Mapnik',
+        'https://tile.openstreetmap.org/${z}/${x}/${y}.png',
+        { numZoomLevels: 19 }
+    ));
+    map.addLayer(new OpenLayers.Layer.OSM(
+        'CyclOSM',
+        'https://a.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png',
+        {
+            numZoomLevels: 20,
+            attribution: 'Map style: CyclOSM (CC-BY-SA) | Map data: © OpenStreetMap contributors'
+        }
+    ));
     /* }}} */
 
     /* {{{ opening_hours layer */

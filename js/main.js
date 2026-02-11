@@ -18,22 +18,19 @@ const related_tags = [
     // 'fee',
 ];
 
-// eslint-disable-next-line no-unused-vars -- Called from HTML popup link
-function Evaluate(number, reset, value) {
-    window.open(evaluation_tool_url + '?EXP='+encodeURIComponent(value), '_blank');
-}
-
 // From https://github.com/rurseekatze/OpenLinkMap/blob/master/js/small.js
 function editPopupContent(content, lat, lon, type, id, oh_value) {
     // add some links to the bottom of a popup
     content += '<br />';
-    content += '<a href="https://www.openstreetmap.org/edit?editor=id&'+type+'='+id+'" target="_blank">iD</a>&nbsp;&nbsp;';
+    const josmImport = `import?url=${encodeURIComponent(`https://overpass-api.de/api/xapi_meta?*[opening_hours=${oh_value}]`)}`;
+    const josmLoad = `load_object?objects=${type}${id}&select=${type}${id}`;
+    content += `<a href="https://www.openstreetmap.org/edit?editor=id&${type}=${id}" target="_blank">iD</a>&nbsp;&nbsp;`;
     content +=
-        '<a href="javascript:josm(\'import?url=' + encodeURIComponent('https://overpass-api.de/api/xapi_meta?*[opening_hours=' + oh_value + ']') + '\')">' + i18next.t('texts.load all with JOSM') + '</a>'+
-        '&nbsp;&nbsp;<a href="javascript:josm(\'load_object?objects=' + type + id + '&select=' + type + id + '\')">JOSM</a>'+
-        '&nbsp;&nbsp;<a href="https://www.openstreetmap.org/'+type+'/'+id+'" target="_blank">Details</a>'
-        + '&nbsp;&nbsp;<a href="' + evaluation_tool_url + '?EXP='
-        + encodeURIComponent(oh_value) + '&lat=' + lat + '&lon=' + lon + '" target="_blank">' + i18next.t('texts.evaluation tool') + '</a>';
+        `<a href="#" class="js-josm" data-josm="${josmImport}">${i18next.t('texts.load all with JOSM')}</a>`+
+        `&nbsp;&nbsp;<a href="#" class="js-josm" data-josm="${josmLoad}">JOSM</a>`+
+        `&nbsp;&nbsp;<a href="https://www.openstreetmap.org/${type}/${id}" target="_blank">Details</a>`
+        + `&nbsp;&nbsp;<a href="${evaluation_tool_url}?EXP=`
+        + `${encodeURIComponent(oh_value)}&lat=${lat}&lon=${lon}" target="_blank">${i18next.t('texts.evaluation tool')}</a>`;
     return content;
 }
 
@@ -79,12 +76,7 @@ function createMap() {
     let OHMode = 0;
     let OSM_tags = []; // keys for the values which should be evaluated.
 
-    const prmarr = window.location.search.replace( "?", "" ).split("&");
-    const params = {};
-    for ( let i = 0; i < prmarr.length; i++) {
-        const tmparr = prmarr[i].split("=");
-        params[tmparr[0]] = tmparr[1];
-    }
+    const params = Object.fromEntries(new URLSearchParams(window.location.search));
 
     if (typeof params['mode'] != 'undefined') {
         OHMode = parseInt(params['mode']);
@@ -191,7 +183,7 @@ function createMap() {
 
                 if (data._oh_value != prettified)
                     text += '<br/>' + i18next.t('texts.prettified value', {
-                            copyFunc: 'javascript:Evaluate(null, null, \'' + data._oh_value + '\')',
+                            copyFunc: evaluation_tool_url + '?EXP=' + encodeURIComponent(data._oh_value),
                         }) + ': <div class="v">'+prettified+'</div>';
 
                 const warnings = data._oh_object.getWarnings();
@@ -565,6 +557,18 @@ function initializeUI() {
 
     // Set HTML lang attribute based on current language
     document.documentElement.setAttribute('lang', i18next.language);
+
+    // JOSM link handler
+    document.addEventListener('click', function(event) {
+        const link = event.target.closest('a.js-josm');
+        if (!link) {
+            return;
+        }
+        event.preventDefault();
+        if (typeof window.josm === 'function') {
+            window.josm(link.dataset.josm);
+        }
+    });
 
     // Add theme toggle button and language selector
     let headerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;">';

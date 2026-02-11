@@ -95,7 +95,7 @@ function createMap() {
 
     /* {{{ OpenLayers */
     //----------------------------------------------------------------------------
-    //    Default-Koordinatensystem fuer alle Controls
+    //    Default coordinate system for all controls
     //----------------------------------------------------------------------------
     map.displayProjection = new OpenLayers.Projection ('EPSG:4326');
 
@@ -111,7 +111,7 @@ function createMap() {
     };
     /* }}} */
 
-    /* {{{ Steuerelemente */
+    /* {{{ Controls */
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.Navigation());
@@ -268,14 +268,14 @@ function createMap() {
         /* }}} */
 
         //------------------------------------------------------------
-        //    Welche POIs laden?
+        //    Which POIs to load?
         //------------------------------------------------------------
 
         keyValues: [
         ],
 
         //------------------------------------------------------------
-        //    Nach pan oder zoom: POIs neuladen.
+        //    Reload POIs after pan or zoom.
         //------------------------------------------------------------
         moveTo: function (bounds, zoomChanged, dragging) {
             OpenLayers.Layer.Markers.prototype.moveTo.apply(this,arguments);
@@ -295,8 +295,8 @@ function createMap() {
         },
 
         //------------------------------------------------------------
-        //    POIs neuladen.
-        //    Muss nach Ändern von keyValues augerufen werden.
+        //    Reload POIs.
+        //    Must be called after changing keyValues.
         //------------------------------------------------------------
         reloadPOIs: function () {
             if (this.updateKeyValues) {
@@ -538,7 +538,7 @@ function createMap() {
     /* }}} */
 
     //----------------------------------------------------------------------------
-    //    Stelle bestimmten Bereich in maximaler Groesse dar
+    //    Display specific area at maximum zoom
     //----------------------------------------------------------------------------
 
     if (!map.getCenter()) {

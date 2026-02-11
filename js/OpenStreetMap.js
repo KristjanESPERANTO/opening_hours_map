@@ -42,7 +42,7 @@ OpenLayers.Layer.OSM.CyclOSM = OpenLayers.Class(OpenLayers.Layer.OSM, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
-        const url = "https://tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png";
+        const url = "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/${z}/${x}/${y}.png";
         options = OpenLayers.Util.extend({
             numZoomLevels: 20,
             attribution: "Map style: CyclOSM (CC-BY-SA) | Map data: © OpenStreetMap contributors"

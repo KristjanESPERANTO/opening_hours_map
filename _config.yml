@@ -1,0 +1,11 @@
+exclude:
+  - build
+  - opening_hours.js
+  - node_modules
+  - Makefile
+  - package.json
+  - package-lock.json
+  - eslint.config.mjs
+  - taginfo_template.json
+  - PR.md
+  - README.md

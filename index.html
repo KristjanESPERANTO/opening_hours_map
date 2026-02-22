@@ -8,7 +8,6 @@
         <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
         <meta name="description" content="Interactive map showing opening_hours tags from OpenStreetMap with visual evaluation.">
         <script src="js/OpenLayers-2.13.1/OpenLayers.js"></script>
-        <script src="js/OpenStreetMap.js"></script>
         <script src="js/popupmarker.js"></script>
         <script src="js/loadstatus.js"></script>
         <script src="js/zoomstatus.js"></script>
@@ -30,8 +29,8 @@
                 <label id="tag_selector_label" for="tag_selector_input" class="visually-hidden">Tag Selector</label>
                 <select id="tag_selector_input" name="tag_selector_input"></select>
                 <form id="userKey">
-                    <label for="key" class="visually-hidden">Key input</label>
-                    <input type="text" id="key" name="key">
+                    <label for="key">or custom tag:</label>
+                    <input type="text" id="key" name="key" placeholder="e.g. opening_hours:kitchen" aria-label="Enter custom OSM tag">
                 </form>
             </section>
 

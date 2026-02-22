@@ -1,0 +1,24 @@
+{
+  "name": "opening-hours-map",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Interactive map showing opening_hours tags from OpenStreetMap",
+  "scripts": {
+    "test": "npm run test:html && npm run lint",
+    "test:html": "html-validate 'index.html'",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.0",
+    "globals": "^17.3.0",
+    "html-validate": "^10.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opening-hours/opening_hours_map.git"
+  },
+  "license": "GPL-3.0-or-later"
+}

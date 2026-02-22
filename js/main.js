@@ -661,6 +661,12 @@ function initializeUI() {
 }
 
 function setupGeolocation(map) {
+    const geolocationLayer = new OpenLayers.Layer.Vector('Geolocation', {
+        displayInLayerSwitcher: false,
+    });
+    map.addLayer(geolocationLayer);
+    let geolocationFeatures = [];
+
     // Geolocation button
     const geolocateBtn = document.createElement('button');
     geolocateBtn.type = 'button';
@@ -680,6 +686,26 @@ function setupGeolocation(map) {
                 const lat = position.coords.latitude;
                 const point = new OpenLayers.LonLat(lon, lat)
                     .transform(new OpenLayers.Projection('EPSG:4326'), map.getProjectionObject());
+
+                if (geolocationFeatures.length > 0) {
+                    geolocationLayer.removeFeatures(geolocationFeatures);
+                    geolocationFeatures = [];
+                }
+
+                const positionGeometry = new OpenLayers.Geometry.Point(point.lon, point.lat);
+                geolocationFeatures.push(new OpenLayers.Feature.Vector(positionGeometry));
+
+                if (typeof position.coords.accuracy === 'number' && position.coords.accuracy > 0) {
+                    const accuracyGeometry = OpenLayers.Geometry.Polygon.createRegularPolygon(
+                        positionGeometry,
+                        position.coords.accuracy,
+                        40,
+                        0
+                    );
+                    geolocationFeatures.push(new OpenLayers.Feature.Vector(accuracyGeometry));
+                }
+
+                geolocationLayer.addFeatures(geolocationFeatures);
                 map.setCenter(point, 16);
                 geolocateBtn.style.opacity = '1';
             },

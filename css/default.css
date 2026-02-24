@@ -115,9 +115,16 @@ noscript { color: #AA4400 }
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
-    line-height: 1;
     padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.olControlGeolocate span {
+    display: block;
+    transform: translateY(-1px);
 }
 
 .olControlGeolocate:hover {

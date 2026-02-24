@@ -718,7 +718,7 @@ function setupGeolocation(map) {
     // Geolocation button
     const geolocateBtn = document.createElement('button');
     geolocateBtn.type = 'button';
-    geolocateBtn.innerHTML = '📍';
+    geolocateBtn.innerHTML = '<span>⊹</span>';
     geolocateBtn.title = 'Zoom to my location';
     geolocateBtn.setAttribute('aria-label', 'Zoom to my location');
     geolocateBtn.className = 'olControlGeolocate';

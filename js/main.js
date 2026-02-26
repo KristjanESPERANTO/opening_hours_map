@@ -37,6 +37,7 @@ function editPopupContent(content, lat, lon, type, id, oh_value) {
 function createMap() {
 
     const map = new OpenLayers.Map ('map', {controls:[]});
+    const mapViewStorageKey = 'opening_hours_map_view';
     let poi_layer;
     let nominatim_data_global = {};
     const permalinkParams = {};
@@ -77,6 +78,9 @@ function createMap() {
     let OSM_tags = []; // keys for the values which should be evaluated.
 
     const params = Object.fromEntries(new URLSearchParams(window.location.search));
+    const hasViewInUrl = typeof params.lat === 'string'
+        || typeof params.lon === 'string'
+        || typeof params.zoom === 'string';
 
     if (typeof params['mode'] != 'undefined') {
         OHMode = parseInt(params['mode']);
@@ -125,6 +129,26 @@ function createMap() {
     }));
     map.addControl(new OpenLayers.Control.Attribution());
     /* }}} */
+
+    map.events.register('moveend', map, function() {
+        const currentCenter = map.getCenter();
+        const currentZoom = map.getZoom();
+        if (!currentCenter || !Number.isFinite(currentZoom)) {
+            return;
+        }
+        const currentCenterWgs84 = currentCenter.clone()
+            .transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
+        const mapViewToSave = {
+            lon: Number(currentCenterWgs84.lon.toFixed(6)),
+            lat: Number(currentCenterWgs84.lat.toFixed(6)),
+            zoom: currentZoom,
+        };
+        try {
+            localStorage.setItem(mapViewStorageKey, JSON.stringify(mapViewToSave));
+        } catch (error) {
+            console.warn('Failed to persist map view in localStorage:', error);
+        }
+    });
 
     /* {{{ Base layers */
     map.addLayer(new OpenLayers.Layer.OSM(
@@ -542,14 +566,40 @@ function createMap() {
     //----------------------------------------------------------------------------
 
     if (!map.getCenter()) {
-        map.zoomToExtent(
-            new OpenLayers.Bounds(7.1042, 50.7362, 7.1171, 50.7417).
-                transform(new OpenLayers.Projection('EPSG:4326'), map.getProjectionObject())
-        );
+        let restoredSavedView = false;
+
+        if (!hasViewInUrl) {
+            try {
+                const savedMapViewRaw = localStorage.getItem(mapViewStorageKey);
+                if (savedMapViewRaw) {
+                    const savedMapView = JSON.parse(savedMapViewRaw);
+                    const savedLon = Number(savedMapView.lon);
+                    const savedLat = Number(savedMapView.lat);
+                    const savedZoom = Number(savedMapView.zoom);
+                    if (Number.isFinite(savedLon) && Number.isFinite(savedLat) && Number.isFinite(savedZoom)) {
+                        const savedCenter = new OpenLayers.LonLat(savedLon, savedLat)
+                            .transform(new OpenLayers.Projection('EPSG:4326'), map.getProjectionObject());
+                        map.setCenter(savedCenter, savedZoom);
+                        restoredSavedView = true;
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to restore map view from localStorage:', error);
+            }
+        }
+
+        if (!restoredSavedView) {
+            map.zoomToExtent(
+                new OpenLayers.Bounds(7.1042, 50.7362, 7.1171, 50.7417).
+                    transform(new OpenLayers.Projection('EPSG:4326'), map.getProjectionObject())
+            );
+        }
     }
     /* }}} */
 
     document.getElementById('tag_selector_input').onchange = keyChanged;
+
+    return map;
 }
 
 function initializeUI() {
@@ -658,10 +708,69 @@ function initializeUI() {
     document.getElementById('footer').innerHTML = footer;
 }
 
+function setupGeolocation(map) {
+    const geolocationLayer = new OpenLayers.Layer.Vector('Geolocation', {
+        displayInLayerSwitcher: false,
+    });
+    map.addLayer(geolocationLayer);
+    let geolocationFeatures = [];
+
+    // Geolocation button
+    const geolocateBtn = document.createElement('button');
+    geolocateBtn.type = 'button';
+    geolocateBtn.innerHTML = '<span>⊹</span>';
+    geolocateBtn.title = 'Zoom to my location';
+    geolocateBtn.setAttribute('aria-label', 'Zoom to my location');
+    geolocateBtn.className = 'olControlGeolocate';
+    geolocateBtn.addEventListener('click', function() {
+        if (!navigator.geolocation) {
+            console.error('Geolocation is not supported by your browser');
+            return;
+        }
+        geolocateBtn.style.opacity = '0.5';
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lon = position.coords.longitude;
+                const lat = position.coords.latitude;
+                const point = new OpenLayers.LonLat(lon, lat)
+                    .transform(new OpenLayers.Projection('EPSG:4326'), map.getProjectionObject());
+
+                if (geolocationFeatures.length > 0) {
+                    geolocationLayer.removeFeatures(geolocationFeatures);
+                    geolocationFeatures = [];
+                }
+
+                const positionGeometry = new OpenLayers.Geometry.Point(point.lon, point.lat);
+                geolocationFeatures.push(new OpenLayers.Feature.Vector(positionGeometry));
+
+                if (typeof position.coords.accuracy === 'number' && position.coords.accuracy > 0) {
+                    const accuracyGeometry = OpenLayers.Geometry.Polygon.createRegularPolygon(
+                        positionGeometry,
+                        position.coords.accuracy,
+                        40,
+                        0
+                    );
+                    geolocationFeatures.push(new OpenLayers.Feature.Vector(accuracyGeometry));
+                }
+
+                geolocationLayer.addFeatures(geolocationFeatures);
+                map.setCenter(point, 16);
+                geolocateBtn.style.opacity = '1';
+            },
+            function(error) {
+                console.error('Geolocation error:', error.message);
+                geolocateBtn.style.opacity = '1';
+            }
+        );
+    });
+    document.getElementById('map').appendChild(geolocateBtn);
+}
+
 // Wait for both DOM and modules to be ready
 function initialize() {
     initializeUI();
-    createMap();
+    const map = createMap();
+    setupGeolocation(map);
 }
 
 // Initialize when modules are ready

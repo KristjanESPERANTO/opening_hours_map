@@ -69,6 +69,13 @@ body[data-theme="dark"] #theme-toggle {
     border-color: #555;
 }
 
+body[data-theme="dark"] .olControlGeolocate {
+    background: #1f1f1f;
+    color: #ffffff;
+    border-color: #8a8a8a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
 #theme-toggle:hover {
     opacity: 0.8;
 }
@@ -93,6 +100,41 @@ noscript { color: #AA4400 }
 .olControlLoadStatus {
     left: 50px;
     top: 10px;
+}
+
+.olControlGeolocate {
+    position: absolute;
+    top: 5px;
+    left: 50px;
+    z-index: 1200;
+    background: #ffffff;
+    border: 2px solid #4a4a4a;
+    border-radius: 4px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.olControlGeolocate span {
+    display: block;
+    transform: translateY(-1px);
+}
+
+.olControlGeolocate:hover {
+    background: #f0f0f0;
+    border-color: #2f2f2f;
+}
+
+.olControlGeolocate:focus-visible {
+    outline: 2px solid #1f6feb;
+    outline-offset: 2px;
 }
 
 .olControlMaplink {

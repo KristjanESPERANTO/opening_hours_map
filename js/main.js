@@ -713,6 +713,8 @@ function setupGeolocation(map) {
         displayInLayerSwitcher: false,
     });
     map.addLayer(geolocationLayer);
+    // Display-only layer – let clicks pass through to POI markers underneath.
+    geolocationLayer.div.style.pointerEvents = 'none';
     let geolocationFeatures = [];
 
     // Geolocation button

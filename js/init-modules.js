@@ -19,16 +19,17 @@ function josm(url_param) {
         });
 }
 
-// reverseGeocodeLocation function (adapted for compatibility with old callback-based API)
-window.reverseGeocodeLocation = function(query, on_success, on_error) {
-    const nominatim_api_url = 'https://nominatim.openstreetmap.org/reverse';
-    // Parse query parameters properly
-    let params = 'format=json&zoom=5&addressdetails=1&email=ypid23@aol.de';
-    if (query) {
-        // Remove leading & if present
-        params += query.startsWith('&') ? query : `&${query}`;
-    }
-    const nominatim_api_url_query = `${nominatim_api_url}?${params}`;
+// reverseGeocodeLocation: reverse geocode coordinates via Nominatim to get country/state context for opening_hours evaluation
+window.reverseGeocodeLocation = function(lat, lon, on_success, on_error) {
+    const params = new URLSearchParams({
+        format: 'json',
+        lat: String(lat),
+        lon: String(lon),
+        zoom: '5',
+        addressdetails: '1',
+        email: 'ypid23@aol.de',
+    });
+    const nominatim_api_url_query = `https://nominatim.openstreetmap.org/reverse?${params}`;
 
     fetch(nominatim_api_url_query)
         .then(response => {

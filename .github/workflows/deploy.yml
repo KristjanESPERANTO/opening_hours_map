@@ -1,0 +1,77 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Prepare Pages artifact
+        run: |
+          set -euo pipefail
+
+          # Build opening_hours.js assets without running top-level commit-signature checks.
+          make --directory opening_hours.js ready-for-hosting
+
+          mkdir -p _site
+          rsync -a --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='opening_hours.js/node_modules' \
+            --exclude='_site' \
+            --exclude='build' \
+            --exclude='evaluation_tool' \
+            ./ _site/
+
+          # Replace top-level symlinks with real directories for Pages artifacts.
+          rsync -a -L opening_hours.js/site/ _site/evaluation_tool/
+          rsync -a -L opening_hours.js/build/ _site/opening_hours.js/build/
+          rsync -a -L opening_hours.js/site/ _site/opening_hours.js/site/
+
+          # Provide OpenLayers runtime file at the path referenced by index.html.
+          OPENLAYERS_URL='https://github.com/openlayers/ol2/releases/download/release-2.13.1/OpenLayers-2.13.1.tar.gz'
+          OPENLAYERS_SHA256='e53ed939b56d4229b2da63c302306db1cf383f433f7329be98d9f4db6f905782'
+          if [[ ! -f js/OpenLayers-2.13.1/OpenLayers.js ]]; then
+            curl -L --fail -o js/OpenLayers-2.13.1.tar.gz "$OPENLAYERS_URL"
+            echo "$OPENLAYERS_SHA256  js/OpenLayers-2.13.1.tar.gz" | sha256sum -c -
+            tar -xzf js/OpenLayers-2.13.1.tar.gz -C js/
+          fi
+          mkdir -p _site/js/OpenLayers-2.13.1
+          rsync -a js/OpenLayers-2.13.1/ _site/js/OpenLayers-2.13.1/
+
+          # Provide i18next module under the original source path.
+          mkdir -p _site/opening_hours.js/node_modules/i18next/dist/esm
+          cp opening_hours.js/node_modules/i18next/dist/esm/i18next.bundled.js _site/opening_hours.js/node_modules/i18next/dist/esm/i18next.bundled.js
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

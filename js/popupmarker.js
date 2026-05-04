@@ -55,9 +55,9 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
 
     // Set CSS classes
     if (marker.icon && marker.icon.imageDiv) {
-      marker.icon.imageDiv.className = "olPopupMarker";
+      marker.icon.imageDiv.className = 'olPopupMarker';
       if (marker.icon.imageDiv.firstChild) {
-        marker.icon.imageDiv.firstChild.className = "olPopupMarker";
+        marker.icon.imageDiv.firstChild.className = 'olPopupMarker';
       }
     }
 
@@ -67,8 +67,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
 
     // Attach click handler
     if (marker.icon && marker.icon.imageDiv) {
-      OpenLayers.Event.observe(marker.icon.imageDiv, "click", OpenLayers.Function.bindAsEventListener(this.markerClick, marker));
-      OpenLayers.Event.observe(marker.icon.imageDiv, "touchend", OpenLayers.Function.bindAsEventListener(this.markerClick, marker));
+      OpenLayers.Event.observe(marker.icon.imageDiv, 'click', OpenLayers.Function.bindAsEventListener(this.markerClick, marker));
+      OpenLayers.Event.observe(marker.icon.imageDiv, 'touchend', OpenLayers.Function.bindAsEventListener(this.markerClick, marker));
     }
     this.addMarker(marker);
     return marker;
@@ -134,7 +134,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
     }
 
     this.map.addPopup(this.currentPopup);
-    this.map.events.triggerEvent("popupopen");
+    this.map.events.triggerEvent('popupopen');
   },
 
   /**
@@ -146,7 +146,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
     this.currentPopup.destroy();
     this.currentPopup = null;
 
-    this.map.events.triggerEvent("popupclose");
+    this.map.events.triggerEvent('popupclose');
     return true;
   },
 
@@ -177,8 +177,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
    * @returns {string} Escaped HTML
    */
   html: function (text) {
-    if (text === null || text === undefined) return "";
-    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    if (text === null || text === undefined) return '';
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   },
 
   /**
@@ -197,7 +197,7 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
    * @returns {string} HTML content
    */
   createHtmlFromData: function (data) {
-    return `<div>Marker: ${this.html(data.id || "unknown")}</div>`;
+    return `<div>Marker: ${this.html(data.id || 'unknown')}</div>`;
   },
 
   /**
@@ -213,8 +213,8 @@ OpenLayers.Layer.PopupMarker = OpenLayers.Class(OpenLayers.Layer.Markers, {
       items.push(this.createHtmlFromData(list[i]));
     }
 
-    return items.join("<hr/>\n");
+    return items.join('<hr/>\n');
   },
 
-  CLASS_NAME: "OpenLayers.Layer.PopupMarker",
+  CLASS_NAME: 'OpenLayers.Layer.PopupMarker',
 });

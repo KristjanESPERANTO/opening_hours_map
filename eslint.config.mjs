@@ -1,20 +1,21 @@
-import { defineConfig, globalIgnores } from 'eslint/config'
+import { defineConfig, globalIgnores } from 'eslint/config';
 import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
 
 export default defineConfig([
-  globalIgnores([
-            'build/*',
-            'js/OpenLayers-*/**',
-            'opening_hours.js/**',
-            'node_modules/**'
-          ]),
-
+    globalIgnores([
+        'build/*',
+        'js/OpenLayers-*/**',
+        'opening_hours.js/**',
+    ]),
     {
-    files: ['**/*.js'],
-    extends: [js.configs.recommended],
+        files: ['**/*.js', '**/*.mjs'],
+        extends: [js.configs.recommended],
+        plugins: {
+            '@stylistic': stylistic,
+        },
         languageOptions: {
-            ecmaVersion: 'latest',
             sourceType: 'module',
             globals: {
                 ...globals.browser,
@@ -33,14 +34,15 @@ export default defineConfig([
             },
         },
         rules: {
-            "no-var": "error",
-            "prefer-const": "error",
-            "prefer-template": "error",
-            "template-curly-spacing": ["error", "never"],
+            'no-var': 'error',
+            'prefer-const': 'error',
+            'prefer-template': 'error',
+            '@stylistic/semi': ['error', 'always'],
+            '@stylistic/quotes': ['error', 'single'],
         },
     },
     {
-    // Legacy non-module scripts (OpenLayers, etc.)
+        // Legacy non-module scripts (OpenLayers, etc.)
         files: [
             'js/OpenStreetMap.js',
             'js/popupmarker.js',
@@ -54,7 +56,5 @@ export default defineConfig([
                 OpenLayers: 'readonly',
             },
         },
-        rules: {
-        },
     },
-])
+]);

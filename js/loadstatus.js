@@ -33,7 +33,7 @@ OpenLayers.Control.LoadStatus=OpenLayers.Class(OpenLayers.Control,{
         for (const layer in this.map.layers) {
             this.attachLayer (layer);
         }
-        this.map.events.register ("addlayer", this, this.registerLayer);
+        this.map.events.register ('addlayer', this, this.registerLayer);
     },
 
     registerLayer: function (evt) {
@@ -42,15 +42,15 @@ OpenLayers.Control.LoadStatus=OpenLayers.Class(OpenLayers.Control,{
 
     attachLayer: function (layer) {
         if (!layer || layer==this || !layer.events || layer.noLoadStatus) { return; }
-        layer.events.register ("loadend",   this, this.eventHandler);
-        layer.events.register ("loadstart", this, this.eventHandler);
+        layer.events.register ('loadend',   this, this.eventHandler);
+        layer.events.register ('loadstart', this, this.eventHandler);
     },
 
     eventHandler: function (evt) {
-        if (evt && evt.type=="loadstart") {
+        if (evt && evt.type=='loadstart') {
             this.loadStatus[evt.object.id] = evt.object.name || evt.object.id;
         }
-        if (evt && evt.type=="loadend") {
+        if (evt && evt.type=='loadend') {
             this.loadStatus[evt.object.id] = null;
         }
         const list = [];
@@ -59,10 +59,10 @@ OpenLayers.Control.LoadStatus=OpenLayers.Class(OpenLayers.Control,{
         }
         const text=this.options.html || this.defaultHtml;
         this.div.innerHTML=OpenLayers.String.format(text, {layers: list.join(',<br/>')});
-        this.div.style.display = list.length>=1 ? "block" : "none";
+        this.div.style.display = list.length>=1 ? 'block' : 'none';
     },
 
-    CLASS_NAME:"OpenLayers.Control.LoadStatus"
+    CLASS_NAME:'OpenLayers.Control.LoadStatus'
 });
 
 //--------------------------------------------------------------------------------

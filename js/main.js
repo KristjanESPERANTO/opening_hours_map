@@ -379,8 +379,7 @@ function createMap() {
                 .transform(this.map.getProjectionObject(), this.map.displayProjection);
 
             if (Object.keys(nominatim_data_global).length === 0) {
-                const nominatim_query = OpenLayers.String.format('&lat=${top}&lon=${left}', bbox);
-                this.updateNominatimData(nominatim_query);
+                this.updateNominatimData(bbox.top, bbox.left);
             }
 
             const bboxQuery = OpenLayers.String.format (
@@ -457,9 +456,9 @@ function createMap() {
 
         /* FIXME */
         // nominatim_data: {},
-        updateNominatimData: function (query) {
+        updateNominatimData: function (lat, lon) {
             reverseGeocodeLocation(
-                query,
+                lat, lon,
                 function(nominatim_data) {
                     // console.log(JSON.stringify(nominatim_data, null, '\t'));
                     /* http://stackoverflow.com/a/1144249 */
@@ -503,15 +502,22 @@ function createMap() {
                 this.createMarker (elementData);
             }
 
-            if (typeof elements[0] !== 'undefined' && (typeof this.lastLat === 'undefined'
-                || Math.abs(this.lastLat - elements[0].lat) > 2
-                || Math.abs(this.lastLon - elements[0].lon) > 2)) {
+            if (typeof elements[0] !== 'undefined') {
+                const firstElement = elements[0];
+                const firstLat = firstElement.center?.lat ?? firstElement.lat;
+                const firstLon = firstElement.center?.lon ?? firstElement.lon;
 
-                // console.log("updateNominatimData inside query");
-                this.updateNominatimData(`&osm_type=${elements[0].type.substr(0,1).toUpperCase()}&osm_id=${elements[0].id}`);
+                if (Number.isFinite(firstLat) && Number.isFinite(firstLon)
+                    && (typeof this.lastLat === 'undefined'
+                    || Math.abs(this.lastLat - firstLat) > 2
+                    || Math.abs(this.lastLon - firstLon) > 2)) {
 
-                this.lastLat = elements[0].lat;
-                this.lastLon = elements[0].lon;
+                    // Reverse geocode by coordinates to avoid stale/deleted OSM object IDs.
+                    this.updateNominatimData(firstLat, firstLon);
+
+                    this.lastLat = firstLat;
+                    this.lastLon = firstLon;
+                }
             }
         },
 

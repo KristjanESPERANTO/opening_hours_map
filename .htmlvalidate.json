@@ -1,11 +1,9 @@
 {
   "extends": ["html-validate:recommended"],
   "rules": {
-    "empty-heading": "off",
+    "doctype-style": "off",
     "wcag/h32": "off",
-    "prefer-native-element": "off"
+    "void-style": "off"
   },
-  "elements": [
-    "html5"
-  ]
+  "elements": ["html5"]
 }

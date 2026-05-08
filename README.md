@@ -26,6 +26,7 @@ make dependencies-get
 ```
 
 This will:
+
 - Install development dependencies (ESLint, html-validate)
 - Download OpenLayers
 - Initialize the opening_hours.js git submodule
@@ -58,23 +59,25 @@ This will build the minified version of opening_hours.js with all dependencies.
 Run validation and linting:
 
 ```Shell
-npm test
+npm run check
 ```
 
 ## Dependencies
 
-* This map is built with [OpenLayers 2.13.1][ol-lib] (legacy version).
-* The opening_hours evaluation is handled by the [opening_hours.js][oh-lib] library.
+- This map is built with [OpenLayers 2.13.1][ol-lib] (legacy version).
+- The opening_hours evaluation is handled by the [opening_hours.js][oh-lib] library.
 
 ## Author
+
 [Robin `ypid` Schneider](https://wiki.openstreetmap.org/wiki/User:Ypid)
 
 <!-- Credits {{{ -->
+
 ## Credits
 
-* Big thanks goes to Netzwolf who created some OpenLayers extensions and [examples][]. He also created the same map showing opening\_hours with his JS implementation (which is withdrawn in favour of opening\_hours.js). Big parts of his code are still in use for the map. Although most code around the opening\_hours interpretation was rewritten.
+- Big thanks goes to Netzwolf who created some OpenLayers extensions and [examples][]. He also created the same map showing opening_hours with his JS implementation (which is withdrawn in favour of opening_hours.js). Big parts of his code are still in use for the map. Although most code around the opening_hours interpretation was rewritten.
 
-* Also thanks to FOSSGIS for hosting a public instance of this service. See the [wiki][fossgis-project].
+- Also thanks to FOSSGIS for hosting a public instance of this service. See the [wiki][fossgis-project].
 
 <!-- }}} -->
 

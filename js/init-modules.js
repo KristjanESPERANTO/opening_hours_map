@@ -27,7 +27,7 @@ window.reverseGeocodeLocation = function(lat, lon, on_success, on_error) {
         lon: String(lon),
         zoom: '5',
         addressdetails: '1',
-        email: 'ypid23@aol.de',
+        email: 'ypid@posteo.net',
     });
     const nominatim_api_url_query = `https://nominatim.openstreetmap.org/reverse?${params}`;
 

@@ -416,7 +416,7 @@ function createMap() {
                 }
 
                 let crashed, oh, it;
-                if (["collection_times", "service_times"].includes(data._oh_key)) {
+                if (['collection_times', 'service_times'].includes(data._oh_key)) {
                     OHMode = 2;
                 }
                 try {
@@ -693,7 +693,7 @@ function initializeUI() {
     const showFilterOptions = ['none', 'error', 'warnOnly', 'errorOnly', 'open', 'unknown', 'closed', 'openOrUnknown'];
     for (let i = 0; i < showFilterOptions.length; i++) {
         const filter_id = showFilterOptions[i];
-        filterHTML += `<label><input type="radio" name="filter"`
+        filterHTML += '<label><input type="radio" name="filter"'
                 + ` value="${filter_id}"`
                 + ` id="filter_form_${filter_id}"`
                 + ` onclick="applyNewFilter(this)">${i18next.t(`texts.filter.${filter_id}`)}</input></label><br>`;

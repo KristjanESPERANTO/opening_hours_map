@@ -5,16 +5,21 @@
   "type": "module",
   "description": "Interactive map showing opening_hours tags from OpenStreetMap",
   "scripts": {
-    "test": "npm run test:html && npm run lint",
-    "test:html": "html-validate 'index.html'",
+    "check": "node --run html:check && node --run lint && node --run format:check",
+    "fix": "node --run lint:fix && node --run format:write",
+    "format:check": "prettier . --check",
+    "format:write": "prettier . --write",
+    "html:check": "html-validate 'index.html'",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "test": "node --run check"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.4.0",
     "globals": "^17.6.0",
-    "html-validate": "^11.2.0"
+    "html-validate": "^11.2.0",
+    "prettier": "^3.8.3"
   },
   "repository": {
     "type": "git",

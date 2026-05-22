@@ -2,12 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  validate-html:
+  checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,10 +18,16 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: latest
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
       - name: Validate HTML
-        run: npm run test:html
+        run: npm run html:check
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check

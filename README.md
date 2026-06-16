@@ -43,6 +43,18 @@ The map uses OpenLayers to show a base map from OpenStreetMap. An additional opt
 
 ## Development
 
+The app is fully static. Serve `index.html` through any local HTTP server for
+development or open the hosted instance directly.
+
+Overpass requests go directly to public fallback endpoints:
+
+- `https://overpass-api.de/api/interpreter`
+- `https://overpass.kumi.systems/api/interpreter`
+- `https://overpass.private.coffee/api/interpreter`
+
+Network/CORS failures trigger endpoint cooldown and a short global cooldown to
+avoid hammering endpoints.
+
 ### Building
 
 To build the opening_hours.js library for production:
@@ -63,7 +75,7 @@ npm test
 
 ## Dependencies
 
-* This map is built with [OpenLayers 2.13.1][ol-lib] (legacy version).
+* This map is built with [OpenLayers 10][ol-lib].
 * The opening_hours evaluation is handled by the [opening_hours.js][oh-lib] library.
 
 ## Author

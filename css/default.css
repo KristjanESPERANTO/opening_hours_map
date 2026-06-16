@@ -70,10 +70,59 @@ body[data-theme="dark"] #theme-toggle {
 }
 
 body[data-theme="dark"] .olControlGeolocate {
-    background: #1f1f1f;
+    background: linear-gradient(180deg, rgba(47, 47, 47, 0.98), rgba(34, 34, 34, 0.92));
     color: #ffffff;
-    border-color: #8a8a8a;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+}
+
+body[data-theme="dark"] .ol-zoom .ol-zoom-in,
+body[data-theme="dark"] .ol-zoom .ol-zoom-out,
+body[data-theme="dark"] .olLayerSwitcher .olLayerSwitcherToggle {
+    background: linear-gradient(180deg, rgba(47, 47, 47, 0.98), rgba(34, 34, 34, 0.92));
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+}
+
+body[data-theme="dark"] .ol-zoom .ol-zoom-in:hover,
+body[data-theme="dark"] .ol-zoom .ol-zoom-out:hover,
+body[data-theme="dark"] .olControlGeolocate:hover,
+body[data-theme="dark"] .olLayerSwitcherToggle:hover {
+    background: linear-gradient(180deg, rgba(58, 58, 58, 0.98), rgba(42, 42, 42, 0.95));
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.62);
+}
+
+body[data-theme="dark"] .olLayerSwitcherIcon {
+    background: #ffffff;
+    box-shadow: 0 -6px 0 #ffffff, 0 6px 0 #ffffff;
+}
+
+body[data-theme="dark"] .olLayerSwitcherPanel {
+    background: rgba(31, 31, 31, 0.98);
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+body[data-theme="dark"] .olLayerSwitcherPanel input {
+    accent-color: #64b5f6;
+}
+
+body[data-theme="dark"] .ol-attribution {
+    background: rgba(31, 31, 31, 0.92);
+    border-color: #555;
+}
+
+body[data-theme="dark"] .ol-attribution li,
+body[data-theme="dark"] .ol-attribution a {
+    color: #e0e0e0;
+}
+
+body[data-theme="dark"] .olPopupCard {
+    background: rgba(30, 30, 30, 0.96);
+    border-color: #555;
+    color: #e0e0e0;
 }
 
 #theme-toggle:hover {
@@ -91,6 +140,167 @@ noscript { color: #AA4400 }
     text-decoration: none;
 }
 
+.ol-control {
+    font-size: 14px;
+}
+
+:root {
+    --map-control-size: 34px;
+    --map-control-gap: 0px;
+    --map-locate-gap: 10px;
+    --map-layer-gap: 10px;
+    --map-control-left: 8px;
+    --map-control-top: 8px;
+    --map-locate-top: calc(var(--map-control-top) + var(--map-control-size) * 2 + var(--map-locate-gap));
+    --map-layer-top: calc(var(--map-locate-top) + var(--map-control-size) + var(--map-layer-gap));
+    --map-control-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 248, 248, 0.84));
+    --map-control-surface-hover: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 248, 248, 0.92));
+    --map-control-border: rgba(0, 0, 0, 0.18);
+    --map-control-border-hover: rgba(0, 0, 0, 0.28);
+    --map-control-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+    --map-control-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.24);
+}
+
+.ol-zoom {
+    top: var(--map-control-top) !important;
+    left: var(--map-control-left) !important;
+}
+
+.ol-zoom .ol-zoom-in,
+.ol-zoom .ol-zoom-out,
+.olControlGeolocate,
+.olLayerSwitcherToggle {
+    width: var(--map-control-size);
+    height: var(--map-control-size);
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--map-control-border);
+    box-sizing: border-box;
+    border-radius: 4px;
+    background: var(--map-control-surface);
+    color: #2d2d2d;
+    box-shadow: var(--map-control-shadow);
+    transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease, color 120ms ease;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.ol-zoom .ol-zoom-in,
+.ol-zoom .ol-zoom-out {
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.ol-zoom .ol-zoom-out {
+    margin-top: var(--map-control-gap) !important;
+}
+
+.olControlGeolocate {
+    position: absolute;
+    top: var(--map-locate-top) !important;
+    left: var(--map-control-left) !important;
+    z-index: 1200;
+    cursor: pointer;
+    font-size: 1.1em;
+    line-height: 1;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.ol-zoom .ol-zoom-in:hover,
+.ol-zoom .ol-zoom-out:hover,
+.olControlGeolocate:hover,
+.olLayerSwitcherToggle:hover {
+    background: var(--map-control-surface-hover);
+    border-color: var(--map-control-border-hover);
+    box-shadow: var(--map-control-shadow-hover);
+    transform: translateY(-1px);
+}
+
+.ol-zoom .ol-zoom-in:active,
+.ol-zoom .ol-zoom-out:active,
+.olControlGeolocate:active,
+.olLayerSwitcherToggle:active {
+    transform: translateY(0);
+    box-shadow: var(--map-control-shadow);
+}
+
+.olLayerSwitcher {
+    position: absolute;
+    top: var(--map-layer-top) !important;
+    left: var(--map-control-left) !important;
+    right: auto;
+    padding: 0;
+    border-radius: 4px;
+    z-index: 1200;
+}
+
+.olLayerSwitcher .olLayerSwitcherToggle {
+    inline-size: var(--map-control-size) !important;
+    block-size: var(--map-control-size) !important;
+    min-inline-size: var(--map-control-size) !important;
+    min-block-size: var(--map-control-size) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    appearance: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.olLayerSwitcherIcon {
+    width: 20px;
+    height: 3px;
+    background: #2d2d2d;
+    display: inline-block;
+    box-shadow: 0 -6px 0 #2d2d2d, 0 6px 0 #2d2d2d;
+}
+
+.olLayerSwitcherPanel {
+    margin-top: 6px;
+    min-width: 130px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    font-size: 12px;
+}
+
+.olLayerSwitcherPanel[hidden] {
+    display: none;
+}
+
+.olLayerSwitcherPanel label {
+    display: block;
+    margin: 3px 0;
+    white-space: nowrap;
+}
+
+.ol-attribution {
+    right: 8px;
+    bottom: 8px;
+    left: auto;
+    max-width: min(90vw, 520px);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+}
+
+.ol-attribution ul {
+    margin: 0;
+    padding: 2px 8px;
+}
+
+.ol-attribution li,
+.ol-attribution a {
+    font-size: 11px;
+    line-height: 1.4;
+}
+
 .olControlAttribution {
     bottom: 0.1em !important;
     left: 0.1em;
@@ -102,34 +312,9 @@ noscript { color: #AA4400 }
     top: 10px;
 }
 
-.olControlGeolocate {
-    position: absolute;
-    top: 5px;
-    left: 50px;
-    z-index: 1200;
-    background: #ffffff;
-    border: 2px solid #4a4a4a;
-    border-radius: 4px;
-    width: 34px;
-    height: 34px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
 .olControlGeolocate span {
     display: block;
-    transform: translateY(-1px);
-}
-
-.olControlGeolocate:hover {
-    background: #f0f0f0;
-    border-color: #2f2f2f;
+    transform: translateY(-0.5px);
 }
 
 .olControlGeolocate:focus-visible {
@@ -165,15 +350,6 @@ noscript { color: #AA4400 }
     opacity: 0.7;
 }
 
-/* .olFramedCloudPopupContent { */
-/*     max-height: 400px; */
-/* } */
-/*  */
-/* .olFramedCloudPopupContent, */
-/* .olFramedCloudPopupContent table { */
-/*     color: black; */
-/* } */
-
 .olFramedCloudPopupContent h3 {
     font-size: 120%;
     font-weight: bold;
@@ -184,18 +360,6 @@ noscript { color: #AA4400 }
     height: 16px;
     width: 16px;
 }
-
-/* .olFramedCloudPopupContent td { */
-/*     background: transparent; */
-/*     margin: 0; */
-/*     padding: 0; */
-/* } */
-/*  */
-/* .olFramedCloudPopupContent p { */
-/*     font-size: xx-small; */
-/*     margin: 0 0 1em; */
-/*     text-align: right; */
-/* } */
 
 .olFramedCloudPopupContent hr {
     display: none;
@@ -239,7 +403,95 @@ noscript { color: #AA4400 }
 }
 
 .olFramedCloudPopupContent {
-    overflow: auto !important;
+    overflow: visible !important;
+}
+
+.olPopupCard {
+    position: relative;
+    z-index: 2;
+    min-width: 500px;
+    max-width: min(86vw, 980px);
+    --popup-connector-width: 3px;
+    --popup-connector-height: 18px;
+    --popup-connector-badge-size: 8px;
+    --popup-connector-badge-offset: 25px;
+    overflow: visible;
+    padding: 14px 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.olPopupCard::before,
+.olPopupCard::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.olPopupCard::before {
+    display: none;
+}
+
+.olPopupCard::after {
+    top: calc(-1 * var(--popup-connector-badge-offset));
+    width: var(--popup-connector-badge-size);
+    height: var(--popup-connector-badge-size);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 2px solid rgba(0, 0, 0, 0.28);
+    box-sizing: border-box;
+    z-index: 2;
+}
+
+.olPopupCardBody {
+    max-height: min(74vh, 700px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 12px;
+    scrollbar-gutter: stable;
+}
+
+.olPopupClose {
+    position: absolute;
+    top: 8px;
+    right: 28px;
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(190, 40, 40, 0.12);
+    color: #8f1f1f;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+}
+
+.olPopupClose:hover {
+    background: rgba(190, 40, 40, 0.2);
+}
+
+.olPopupCloseGlyph {
+    display: block;
+    transform: translateY(-1px);
+}
+
+.olPopupClose:focus-visible {
+    outline: 2px solid #2457ff;
+    outline-offset: 1px;
+}
+
+.olPopupCardTitle {
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
 @media print {

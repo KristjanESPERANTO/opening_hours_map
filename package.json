@@ -5,21 +5,28 @@
   "type": "module",
   "description": "Interactive map showing opening_hours tags from OpenStreetMap",
   "scripts": {
-    "test": "npm run test:html && npm run lint",
+    "build": "rollup -c",
+    "test": "npm run test:unit && npm run test:html && npm run lint",
+    "test:unit": "node --test 'test/unit/**/*.test.js'",
     "test:html": "html-validate 'index.html'",
     "lint": "eslint",
     "lint:fix": "eslint --fix"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@stylistic/eslint-plugin": "^5.10.0",
     "eslint": "^10.5.0",
     "globals": "^17.6.0",
-    "html-validate": "^11.5.3"
+    "html-validate": "^11.5.3",
+    "rollup": "^4.62.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/opening-hours/opening_hours_map.git"
   },
-  "license": "GPL-3.0-or-later"
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "ol": "^10.9.0"
+  }
 }

@@ -6,6 +6,7 @@
   "description": "Interactive map showing opening_hours tags from OpenStreetMap",
   "scripts": {
     "build": "rollup -c",
+    "dev": "vite --open '/?mock=true&lat=50.7374&lon=7.1106&zoom=13'",
     "test": "npm run test:unit && npm run test:html && npm run lint",
     "test:unit": "node --test 'test/unit/**/*.test.js'",
     "test:html": "html-validate 'index.html'",
@@ -19,7 +20,8 @@
     "eslint": "^10.5.0",
     "globals": "^17.6.0",
     "html-validate": "^11.5.3",
-    "rollup": "^4.62.0"
+    "rollup": "^4.62.0",
+    "vite": "^8.1.5"
   },
   "repository": {
     "type": "git",

@@ -75,6 +75,10 @@ function createPermalinkQueryParams(map, view, permalinkParams) {
         params.set('tags', permalinkParams.tags);
     }
 
+    if (permalinkParams && typeof permalinkParams.mock === 'string' && permalinkParams.mock.length > 0) {
+        params.set('mock', permalinkParams.mock);
+    }
+
     if (map && map.getView && map.getView().getRotation && Number.isFinite(map.getView().getRotation())) {
         const rotation = map.getView().getRotation();
         if (rotation !== 0) {

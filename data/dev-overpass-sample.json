@@ -1,0 +1,666 @@
+{
+  "version": 0.6,
+  "generator": "opening_hours_map dev mock",
+  "elements": [
+    {
+      "type": "node",
+      "id": 9000001,
+      "lat": 50.729706,
+      "lon": 7.101794,
+      "tags": {
+        "name": "Mock Example 01",
+        "amenity": "cafe",
+        "opening_hours": "Mo-Fr 10:00-20:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000002,
+      "lat": 50.729706,
+      "lon": 7.103981,
+      "tags": {
+        "name": "Mock Example 02",
+        "amenity": "cafe",
+        "opening_hours": "Mo,Tu,Th,Fr 12:00-18:00; Sa,PH 12:00-17:00; Th[3],Th[-1] off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000003,
+      "lat": 50.729706,
+      "lon": 7.106169,
+      "tags": {
+        "name": "Mock Example 03",
+        "amenity": "cafe",
+        "opening_hours": "00:00-24:00; Tu-Su,PH 08:30-09:00 off; Tu-Su 14:00-14:30 off; Mo 08:00-13:00 off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000004,
+      "lat": 50.729706,
+      "lon": 7.108356,
+      "tags": {
+        "name": "Mock Example 04",
+        "amenity": "cafe",
+        "opening_hours": "Fr-Sa 18:00-06:00; PH 18:00-06:00 off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000005,
+      "lat": 50.729706,
+      "lon": 7.110544,
+      "tags": {
+        "name": "Mock Example 05",
+        "amenity": "cafe",
+        "opening_hours": "Mo 10:00-12:00,12:30-15:00"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000006,
+      "lat": 50.729706,
+      "lon": 7.112731,
+      "tags": {
+        "name": "Mock Example 06",
+        "amenity": "cafe",
+        "opening_hours": "Mo 10:00-12:00,12:30-15:00; Tu-Fr 08:00-12:00,12:30-15:00; Sa 08:00-12:00"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000007,
+      "lat": 50.729706,
+      "lon": 7.114919,
+      "tags": {
+        "name": "Mock Example 07",
+        "amenity": "cafe",
+        "opening_hours": "24/7"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000008,
+      "lat": 50.729706,
+      "lon": 7.117106,
+      "tags": {
+        "name": "Mock Example 08",
+        "amenity": "cafe",
+        "opening_hours": "\"only after registration\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000009,
+      "lat": 50.731919,
+      "lon": 7.101794,
+      "tags": {
+        "name": "Mock Example 09",
+        "amenity": "cafe",
+        "opening_hours": "22:00-23:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000010,
+      "lat": 50.731919,
+      "lon": 7.103981,
+      "tags": {
+        "name": "Mock Example 10",
+        "amenity": "cafe",
+        "opening_hours": "08:00-11:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000011,
+      "lat": 50.731919,
+      "lon": 7.106169,
+      "tags": {
+        "name": "Mock Example 11",
+        "amenity": "cafe",
+        "opening_hours": "open; Mo 15:00-16:00 off; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000012,
+      "lat": 50.731919,
+      "lon": 7.108356,
+      "tags": {
+        "name": "Mock Example 12",
+        "amenity": "cafe",
+        "opening_hours": "Mo-Su 22:00-23:00; We,PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000013,
+      "lat": 50.731919,
+      "lon": 7.110544,
+      "tags": {
+        "name": "Mock Example 13",
+        "amenity": "cafe",
+        "opening_hours": "We-Fr 10:00-24:00 open \"it is open\" || \"please call\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000014,
+      "lat": 50.731919,
+      "lon": 7.112731,
+      "tags": {
+        "name": "Mock Example 14",
+        "amenity": "cafe",
+        "opening_hours": "Mo-Fr 08:00-11:00 || Tu-Th,PH open \"Emergency only\""
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000015,
+      "lat": 50.731919,
+      "lon": 7.114919,
+      "tags": {
+        "name": "Mock Example 15",
+        "amenity": "cafe",
+        "opening_hours": "Tu-Th,We 22:00-23:00 open \"Hot meals\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000016,
+      "lat": 50.731919,
+      "lon": 7.117106,
+      "tags": {
+        "name": "Mock Example 16",
+        "amenity": "cafe",
+        "opening_hours": "Mo 12:00-14:00 open \"female only\", Mo 14:00-16:00 open \"male only\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000017,
+      "lat": 50.734131,
+      "lon": 7.101794,
+      "tags": {
+        "name": "Mock Example 17",
+        "amenity": "cafe",
+        "opening_hours": "Apr: 22:00-23:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000018,
+      "lat": 50.734131,
+      "lon": 7.103981,
+      "tags": {
+        "name": "Mock Example 18",
+        "amenity": "cafe",
+        "opening_hours": "Jul-Jan: 22:00-23:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000019,
+      "lat": 50.734131,
+      "lon": 7.106169,
+      "tags": {
+        "name": "Mock Example 19",
+        "amenity": "cafe",
+        "opening_hours": "Jan-Jul: 22:00-23:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000020,
+      "lat": 50.734131,
+      "lon": 7.108356,
+      "tags": {
+        "name": "Mock Example 20",
+        "amenity": "cafe",
+        "opening_hours": "Jul 23-Jan 3: \"needs reservation by phone\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000021,
+      "lat": 50.734131,
+      "lon": 7.110544,
+      "tags": {
+        "name": "Mock Example 21",
+        "amenity": "cafe",
+        "opening_hours": "Jul 23-Jan 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000022,
+      "lat": 50.734131,
+      "lon": 7.112731,
+      "tags": {
+        "name": "Mock Example 22",
+        "amenity": "cafe",
+        "opening_hours": "Jul 23-Jan 3: 08:00-11:00 \"Please make a reservation by phone.\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000023,
+      "lat": 50.734131,
+      "lon": 7.114919,
+      "tags": {
+        "name": "Mock Example 23",
+        "amenity": "cafe",
+        "opening_hours": "Jan 23-Jul 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000024,
+      "lat": 50.734131,
+      "lon": 7.117106,
+      "tags": {
+        "name": "Mock Example 24",
+        "amenity": "cafe",
+        "opening_hours": "Mar Su[-1]-Dec Su[1] -2 days: 22:00-23:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000025,
+      "lat": 50.736344,
+      "lon": 7.101794,
+      "tags": {
+        "name": "Mock Example 25",
+        "amenity": "cafe",
+        "opening_hours": "Sa[1],Sa[1] +1 day 10:00-12:00 open \"first weekend in the month\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000026,
+      "lat": 50.736344,
+      "lon": 7.103981,
+      "tags": {
+        "name": "Mock Example 26",
+        "amenity": "cafe",
+        "opening_hours": "Sa[-1],Sa[-1] +1 day 10:00-12:00 open \"last weekend in the month\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000027,
+      "lat": 50.736344,
+      "lon": 7.106169,
+      "tags": {
+        "name": "Mock Example 27",
+        "amenity": "cafe",
+        "opening_hours": "Sa-Su 00:00-24:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000028,
+      "lat": 50.736344,
+      "lon": 7.108356,
+      "tags": {
+        "name": "Mock Example 28",
+        "amenity": "cafe",
+        "opening_hours": "Mo-Fr 00:00-24:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000029,
+      "lat": 50.736344,
+      "lon": 7.110544,
+      "tags": {
+        "name": "Mock Example 29",
+        "amenity": "cafe",
+        "opening_hours": "sunrise-sunset open \"Beware of sunburn!\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000030,
+      "lat": 50.736344,
+      "lon": 7.112731,
+      "tags": {
+        "name": "Mock Example 30",
+        "amenity": "cafe",
+        "opening_hours": "sunset-sunrise open \"Beware of vampires!\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000031,
+      "lat": 50.736344,
+      "lon": 7.114919,
+      "tags": {
+        "name": "Mock Example 31",
+        "amenity": "cafe",
+        "opening_hours": "(sunset+01:00)-24:00 || closed \"No drink before sunset!\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000032,
+      "lat": 50.736344,
+      "lon": 7.117106,
+      "tags": {
+        "name": "Mock Example 32",
+        "amenity": "cafe",
+        "opening_hours": "22:00+; PH 22:00-12:00 off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000033,
+      "lat": 50.738556,
+      "lon": 7.101794,
+      "tags": {
+        "name": "Mock Example 33",
+        "amenity": "cafe",
+        "opening_hours": "Tu,PH 23:59-22:59"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000034,
+      "lat": 50.738556,
+      "lon": 7.103981,
+      "tags": {
+        "name": "Mock Example 34",
+        "amenity": "cafe",
+        "opening_hours": "We-Mo,PH 23:59-22:59"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000035,
+      "lat": 50.738556,
+      "lon": 7.106169,
+      "tags": {
+        "name": "Mock Example 35",
+        "amenity": "cafe",
+        "opening_hours": "week 2-52/2 We 00:00-24:00; week 1-53/2 Sa 00:00-24:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000036,
+      "lat": 50.738556,
+      "lon": 7.108356,
+      "tags": {
+        "name": "Mock Example 36",
+        "amenity": "cafe",
+        "opening_hours": "week 4-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000037,
+      "lat": 50.738556,
+      "lon": 7.110544,
+      "tags": {
+        "name": "Mock Example 37",
+        "amenity": "cafe",
+        "opening_hours": "2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000038,
+      "lat": 50.738556,
+      "lon": 7.112731,
+      "tags": {
+        "name": "Mock Example 38",
+        "amenity": "cafe",
+        "opening_hours": "24/7 closed \"always closed\""
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000039,
+      "lat": 50.738556,
+      "lon": 7.114919,
+      "tags": {
+        "name": "Mock Example 39",
+        "amenity": "cafe",
+        "opening_hours": "2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 1"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000040,
+      "lat": 50.738556,
+      "lon": 7.117106,
+      "tags": {
+        "name": "Mock Example 40",
+        "amenity": "cafe",
+        "opening_hours": "Jan 23-Feb 11,Feb 12 00:00-24:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000041,
+      "lat": 50.740769,
+      "lon": 7.101794,
+      "tags": {
+        "name": "Mock Example 41",
+        "amenity": "cafe",
+        "opening_hours": "Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000042,
+      "lat": 50.740769,
+      "lon": 7.103981,
+      "tags": {
+        "name": "Mock Example 42",
+        "amenity": "cafe",
+        "opening_hours": "Mo-Fr 08:00-12:00, We 14:00-18:00; Su,PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000043,
+      "lat": 50.740769,
+      "lon": 7.106169,
+      "tags": {
+        "name": "Mock Example 43",
+        "amenity": "cafe",
+        "opening_hours": "00:00-24:00 week 6 Mo-Su Feb; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000044,
+      "lat": 50.740769,
+      "lon": 7.108356,
+      "tags": {
+        "name": "Mock Example 44",
+        "amenity": "cafe",
+        "opening_hours": "monday, Tu, wE, TH 12:00 - 20:00 ; 14:00-16:00 Off ; closed public Holiday"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000045,
+      "lat": 50.740769,
+      "lon": 7.110544,
+      "tags": {
+        "name": "Mock Example 45",
+        "amenity": "cafe",
+        "opening_hours": "We; PH off"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000046,
+      "lat": 50.740769,
+      "lon": 7.112731,
+      "tags": {
+        "name": "Mock Example 46",
+        "amenity": "cafe",
+        "opening_hours": "PH"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000047,
+      "lat": 50.740769,
+      "lon": 7.114919,
+      "tags": {
+        "name": "Mock Example 47",
+        "amenity": "cafe",
+        "opening_hours": "PH Mo-Fr"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000048,
+      "lat": 50.740769,
+      "lon": 7.117106,
+      "tags": {
+        "name": "Mock Example 48",
+        "amenity": "cafe",
+        "opening_hours": "PH -1 day"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000049,
+      "lat": 50.742981,
+      "lon": 7.101794,
+      "tags": {
+        "name": "Mock Example 49",
+        "amenity": "cafe",
+        "opening_hours": "SH"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000050,
+      "lat": 50.742981,
+      "lon": 7.103981,
+      "tags": {
+        "name": "Mock Example 50",
+        "amenity": "cafe",
+        "opening_hours": "SH,PH"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000051,
+      "lat": 50.742981,
+      "lon": 7.106169,
+      "tags": {
+        "name": "Mock Example 51",
+        "amenity": "cafe",
+        "opening_hours": "PH,SH"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000052,
+      "lat": 50.742981,
+      "lon": 7.108356,
+      "tags": {
+        "name": "Mock Example 52",
+        "amenity": "cafe",
+        "opening_hours": "We[1-3]"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000053,
+      "lat": 50.742981,
+      "lon": 7.110544,
+      "tags": {
+        "name": "Mock Example 53",
+        "amenity": "cafe",
+        "opening_hours": "We[3-5]"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000054,
+      "lat": 50.742981,
+      "lon": 7.112731,
+      "tags": {
+        "name": "Mock Example 54",
+        "amenity": "cafe",
+        "opening_hours": "Sa"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000055,
+      "lat": 50.742981,
+      "lon": 7.114919,
+      "tags": {
+        "name": "Mock Example 55",
+        "amenity": "cafe",
+        "opening_hours": "Sa[1]"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000056,
+      "lat": 50.742981,
+      "lon": 7.117106,
+      "tags": {
+        "name": "Mock Example 56",
+        "amenity": "cafe",
+        "opening_hours": "Sa[1-3]"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000057,
+      "lat": 50.745194,
+      "lon": 7.101794,
+      "tags": {
+        "name": "Mock Example 57",
+        "amenity": "cafe",
+        "opening_hours": "Tu-Th"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000058,
+      "lat": 50.745194,
+      "lon": 7.103981,
+      "tags": {
+        "name": "Mock Example 58",
+        "amenity": "cafe",
+        "opening_hours": "Fr-Mo"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000059,
+      "lat": 50.745194,
+      "lon": 7.106169,
+      "tags": {
+        "name": "Mock Example 59",
+        "amenity": "cafe",
+        "opening_hours": "Mo-Su; We \"only after registration\""
+      }
+    },
+    {
+      "type": "node",
+      "id": 9000060,
+      "lat": 50.745194,
+      "lon": 7.108356,
+      "tags": {
+        "name": "Mock Example 60",
+        "amenity": "cafe",
+        "opening_hours": "Oct: We[1]"
+      }
+    }
+  ]
+}

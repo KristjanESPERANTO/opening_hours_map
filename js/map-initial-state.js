@@ -85,8 +85,10 @@ export function createMapInitialState(options) {
 
     const initialUrlState = parseUrlState(search, fallbackTagByMode);
     const filterState = createFilterState(search);
+    const mockParam = params.get('mock');
     const permalinkParams = createPermalinkParams({
         filter: filterState.filter,
+        ...(typeof mockParam === 'string' ? {mock: mockParam} : {}),
     });
 
     return {

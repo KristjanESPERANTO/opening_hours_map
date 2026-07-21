@@ -7,7 +7,5 @@
     "wcag/h32": "off",
     "prefer-native-element": "off"
   },
-  "elements": [
-    "html5"
-  ]
+  "elements": ["html5"]
 }

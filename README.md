@@ -26,6 +26,7 @@ make dependencies-get
 ```
 
 This will:
+
 - Install development dependencies (ESLint, html-validate)
 - Download OpenLayers
 - Initialize the opening_hours.js git submodule
@@ -69,16 +70,13 @@ network failures.
 
 Default request order depends on runtime mode:
 
-1. Vite development mode (`npm run dev`):
-        - starts with `?mock=true` by default (local mock interpreter endpoint
-            `/api/mock/interpreter`, backed by `data/dev-overpass-sample.json`)
-        - use `lat=<...>&lon=<...>&zoom=<...>` to center the view on your target region
-        - remove `mock=true` to use direct browser requests to public Overpass
-            endpoints
+1. Vite development mode (`npm run dev`): - starts with `?mock=true` by default (local mock interpreter endpoint
+   `/api/mock/interpreter`, backed by `data/dev-overpass-sample.json`) - use `lat=<...>&lon=<...>&zoom=<...>` to center the view on your target region - remove `mock=true` to use direct browser requests to public Overpass
+   endpoints
 2. Production build:
-    - `https://overpass-api.de/api/interpreter`
-    - `https://overpass.kumi.systems/api/interpreter`
-    - `https://overpass.private.coffee/api/interpreter`
+   - `https://overpass-api.de/api/interpreter`
+   - `https://overpass.kumi.systems/api/interpreter`
+   - `https://overpass.private.coffee/api/interpreter`
 
 Network/CORS failures trigger endpoint cooldown and a short global cooldown to
 avoid hammering endpoints.
@@ -103,18 +101,20 @@ npm test
 
 ## Dependencies
 
-* This map is built with [OpenLayers 10][ol-lib].
-* The opening_hours evaluation is handled by the [opening_hours.js][oh-lib] library.
+- This map is built with [OpenLayers 10][ol-lib].
+- The opening_hours evaluation is handled by the [opening_hours.js][oh-lib] library.
 
 ## Author
+
 [Robin `ypid` Schneider](https://wiki.openstreetmap.org/wiki/User:Ypid)
 
 <!-- Credits {{{ -->
+
 ## Credits
 
-* Big thanks goes to Netzwolf who created some OpenLayers extensions and [examples][]. He also created the same map showing opening\_hours with his JS implementation (which is withdrawn in favour of opening\_hours.js). Big parts of his code are still in use for the map. Although most code around the opening\_hours interpretation was rewritten.
+- Big thanks goes to Netzwolf who created some OpenLayers extensions and [examples][]. He also created the same map showing opening\_hours with his JS implementation (which is withdrawn in favour of opening\_hours.js). Big parts of his code are still in use for the map. Although most code around the opening\_hours interpretation was rewritten.
 
-* Also thanks to FOSSGIS for hosting a public instance of this service. See the [wiki][fossgis-project].
+- Also thanks to FOSSGIS for hosting a public instance of this service. See the [wiki][fossgis-project].
 
 <!-- }}} -->
 

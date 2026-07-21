@@ -30,21 +30,22 @@ const STATE_COLORS = {
     error: '#ff00ff',
 };
 
+function hasMissingPublicHolidayWarning(openingHoursObject) {
+    if (!openingHoursObject || typeof openingHoursObject.getStructuredWarnings !== 'function') {
+        return false;
+    }
+
+    return openingHoursObject.getStructuredWarnings().some(warning => warning.type === 'public_holiday');
+}
+
 // Returns true when the popup should show the missing-PH notice for today.
-export function shouldShowPublicHolidayNoticeToday(openingHoursConstructor, ohValue, nominatimData, locale, reftime) {
-    if (typeof ohValue !== 'string' || ohValue.trim() === '') {
+export function shouldShowPublicHolidayNoticeToday(openingHoursObject, openingHoursConstructor, nominatimData, locale, reftime) {
+    if (!hasMissingPublicHolidayWarning(openingHoursObject)) {
         return false;
     }
 
     try {
-        // 1. Does the value lack a public holiday (PH) rule?
-        const oh = new openingHoursConstructor(ohValue, nominatimData, { locale, warnings_severity: 7 });
-        const missesPublicHoliday = oh.getStructuredWarnings().some(warning => warning.type === 'public_holiday');
-        if (!missesPublicHoliday) {
-            return false;
-        }
-
-        // 2. Is today actually a public holiday at this location?
+        // Is today actually a public holiday at this location?
         const phToday = new openingHoursConstructor('PH', nominatimData, { locale }).getIterator(reftime);
         return phToday.getState() === true && phToday.getUnknown() === false;
     } catch {
@@ -618,7 +619,7 @@ export function createPoiLayer(options) {
                 drawTableAndComments: openingHoursTable.drawTableAndComments.bind(openingHoursTable),
             });
 
-            if (shouldShowPublicHolidayNoticeToday(openingHoursConstructor, data._oh_value, nominatimDataGlobal, i18nextRef.language, reftime)) {
+            if (shouldShowPublicHolidayNoticeToday(data._oh_object, openingHoursConstructor, nominatimDataGlobal, i18nextRef.language, reftime)) {
                 text += `<br/><div class="v">${htmlEscape(i18nextRef.t('texts.current day public holiday missing', {
                     defaultValue: 'Today is a public holiday at this location, but this value has no explicit PH rule. The shown status may be misleading for today.',
                 }))}</div>`;

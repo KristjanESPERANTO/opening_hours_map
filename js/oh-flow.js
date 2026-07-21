@@ -43,8 +43,7 @@ function createOpeningHoursEvaluation(options) {
     try {
         const oh = new openingHoursConstructor(ohValue, nominatimData, {
             mode,
-            // warnings_severity: 7,
-            // Use default for now. See: https://github.com/opening-hours/opening_hours.js/issues/81
+            warnings_severity: 7,
             locale,
         });
         const it = oh.getIterator(reftime);

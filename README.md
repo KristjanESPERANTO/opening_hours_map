@@ -43,14 +43,42 @@ The map uses OpenLayers to show a base map from OpenStreetMap. An additional opt
 
 ## Development
 
-The app is fully static. Serve `index.html` through any local HTTP server for
-development or open the hosted instance directly.
+### Local Development
 
-Overpass requests go directly to public fallback endpoints:
+Start the development server:
 
-- `https://overpass-api.de/api/interpreter`
-- `https://overpass.kumi.systems/api/interpreter`
-- `https://overpass.private.coffee/api/interpreter`
+```Shell
+npm run dev
+```
+
+This opens the app with `?mock=true` by default.
+
+Use the normal map URL parameters (`lat`, `lon`, `zoom`) to center the map on
+the mock region you want to work with.
+
+This starts Vite on `http://127.0.0.1:5502/` (or the next free port) and
+serves the app without a custom Overpass proxy.
+
+**Why Mock in Development?**
+
+Browser-direct calls to public Overpass endpoints often fail due to CORS and
+rate limits. Local mock data keeps development predictable and avoids noisy
+network failures.
+
+### Overpass Request Flow
+
+Default request order depends on runtime mode:
+
+1. Vite development mode (`npm run dev`):
+        - starts with `?mock=true` by default (local mock interpreter endpoint
+            `/api/mock/interpreter`, backed by `data/dev-overpass-sample.json`)
+        - use `lat=<...>&lon=<...>&zoom=<...>` to center the view on your target region
+        - remove `mock=true` to use direct browser requests to public Overpass
+            endpoints
+2. Production build:
+    - `https://overpass-api.de/api/interpreter`
+    - `https://overpass.kumi.systems/api/interpreter`
+    - `https://overpass.private.coffee/api/interpreter`
 
 Network/CORS failures trigger endpoint cooldown and a short global cooldown to
 avoid hammering endpoints.

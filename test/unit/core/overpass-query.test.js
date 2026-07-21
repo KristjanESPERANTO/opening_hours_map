@@ -60,7 +60,15 @@ test('overpass-query', async t => {
         const originalFetch = globalThis.fetch;
         let calls = 0;
 
-        globalThis.fetch = async () => {
+        globalThis.fetch = async (url) => {
+            if (String(url) === '/api/mock/interpreter') {
+                return {
+                    ok: true,
+                    status: 200,
+                    json: async () => ({ elements: [{id: 999}] }),
+                };
+            }
+
             calls += 1;
             if (calls === 1) {
                 return {
@@ -86,6 +94,14 @@ test('overpass-query', async t => {
 
             assert.strictEqual(result.fallbackEndpoint, 'https://b.example/api');
             assert.deepStrictEqual(result.data, { elements: [] });
+
+            const mockResult = await loadOverpassPois('dummy-query', {
+                useMockOverpass: true,
+                mockEndpoint: '/api/mock/interpreter',
+            });
+
+            assert.strictEqual(mockResult.fallbackEndpoint, null);
+            assert.deepStrictEqual(mockResult.data, { elements: [{id: 999}] });
         } finally {
             globalThis.fetch = originalFetch;
         }
@@ -124,4 +140,5 @@ test('overpass-query', async t => {
             globalThis.location = originalLocation;
         }
     });
+
 });

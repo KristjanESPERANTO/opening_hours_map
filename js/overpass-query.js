@@ -8,14 +8,37 @@ const REMOTE_OVERPASS_ENDPOINTS = [
     'https://overpass.private.coffee/api/interpreter',
 ];
 
-const DEFAULT_OVERPASS_ENDPOINTS = REMOTE_OVERPASS_ENDPOINTS;
+const DEFAULT_OVERPASS_ENDPOINTS = [...REMOTE_OVERPASS_ENDPOINTS];
 
 const GLOBAL_RATE_LIMIT_BACKOFF_MS = 30000;
 const ENDPOINT_NETWORK_BACKOFF_MS = 15000;
+const DEV_OVERPASS_MOCK_ENDPOINT = '/api/mock/interpreter';
 
 let globalCooldownUntil = 0;
 let globalCooldownReason = 'failures';
 const endpointCooldownUntil = new Map();
+
+export function shouldUseDevMockOverpass(
+    locationSearch = globalThis?.location?.search,
+    isDevMode = Boolean(import.meta.env?.DEV)
+) {
+    if (!isDevMode) {
+        return false;
+    }
+
+    const params = new URLSearchParams(String(locationSearch || ''));
+    const mock = params.get('mock');
+
+    if (mock === 'true' || mock === '1') {
+        return true;
+    }
+
+    if (mock === 'false' || mock === '0') {
+        return false;
+    }
+
+    return false;
+}
 
 function getSecondsRemaining(until, now = Date.now()) {
     return Math.max(0, Math.ceil((until - now) / 1000));
@@ -255,7 +278,23 @@ export async function loadOverpassPois(overpassQl, options = {}) {
         timeoutMs = 30000,
         endpoints = DEFAULT_OVERPASS_ENDPOINTS,
         signal,
+        useMockOverpass = shouldUseDevMockOverpass(),
+        mockEndpoint = DEV_OVERPASS_MOCK_ENDPOINT,
     } = options;
+
+    if (useMockOverpass) {
+        const result = await fetchOverpassJsonWithFallback(overpassQl, {
+            timeoutMs,
+            endpoints: [mockEndpoint],
+            signal,
+        });
+
+        return {
+            data: result.data,
+            fallbackEndpoint: null,
+        };
+    }
+
     const result = await fetchOverpassJsonWithFallback(overpassQl, {
         timeoutMs,
         endpoints,

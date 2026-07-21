@@ -30,6 +30,28 @@ const STATE_COLORS = {
     error: '#ff00ff',
 };
 
+// Returns true when the popup should show the missing-PH notice for today.
+export function shouldShowPublicHolidayNoticeToday(openingHoursConstructor, ohValue, nominatimData, locale, reftime) {
+    if (typeof ohValue !== 'string' || ohValue.trim() === '') {
+        return false;
+    }
+
+    try {
+        // 1. Does the value lack a public holiday (PH) rule?
+        const oh = new openingHoursConstructor(ohValue, nominatimData, { locale, warnings_severity: 7 });
+        const missesPublicHoliday = oh.getStructuredWarnings().some(warning => warning.type === 'public_holiday');
+        if (!missesPublicHoliday) {
+            return false;
+        }
+
+        // 2. Is today actually a public holiday at this location?
+        const phToday = new openingHoursConstructor('PH', nominatimData, { locale }).getIterator(reftime);
+        return phToday.getState() === true && phToday.getUnknown() === false;
+    } catch {
+        return false;
+    }
+}
+
 function createStyleForData(data) {
     let color = STATE_COLORS.error;
 
@@ -577,6 +599,7 @@ export function createPoiLayer(options) {
     };
 
     const buildPopupHtml = function(data) {
+        const reftime = new Date();
         evaluateOH(data);
 
         let text = buildPopupHeaderHtml(data, {
@@ -590,10 +613,16 @@ export function createPoiLayer(options) {
             text = appendOpeningHoursDetails({
                 text,
                 data,
-                reftime: new Date(),
+                reftime,
                 prettifiedLabel: createPrettifiedLabel(i18nextRef, evaluationToolUrl, data._oh_value),
                 drawTableAndComments: openingHoursTable.drawTableAndComments.bind(openingHoursTable),
             });
+
+            if (shouldShowPublicHolidayNoticeToday(openingHoursConstructor, data._oh_value, nominatimDataGlobal, i18nextRef.language, reftime)) {
+                text += `<br/><div class="v">${htmlEscape(i18nextRef.t('texts.current day public holiday missing', {
+                    defaultValue: 'Today is a public holiday at this location, but this value has no explicit PH rule. The shown status may be misleading for today.',
+                }))}</div>`;
+            }
         }
 
         text += buildPopupTagTableHtml(data, {

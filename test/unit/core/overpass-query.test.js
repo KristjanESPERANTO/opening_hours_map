@@ -141,4 +141,10 @@ test('overpass-query', async t => {
         }
     });
 
+    await t.test('formatOverpassFailure exposes cooldown wait time', () => {
+        const formatted = formatOverpassFailure('global overpass cooldown active for 7s after network/CORS issues');
+
+        assert.strictEqual(formatted.retryAfterSeconds, 7);
+    });
+
 });

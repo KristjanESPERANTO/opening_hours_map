@@ -426,6 +426,19 @@ export function createPoiLayer(options) {
     let lastLat = undefined;
     let lastLon = undefined;
     let activeOverpassRequestController = null;
+    let overpassRetryTimer = null;
+    const overpassStatusElement = documentRef.createElement('div');
+    overpassStatusElement.className = 'overpass-status';
+    overpassStatusElement.setAttribute('role', 'status');
+    overpassStatusElement.setAttribute('aria-live', 'polite');
+    overpassStatusElement.hidden = true;
+    const overpassStatusMessage = documentRef.createElement('span');
+    const overpassRetryButton = documentRef.createElement('button');
+    overpassRetryButton.type = 'button';
+    overpassRetryButton.textContent = 'Retry';
+    overpassRetryButton.hidden = true;
+    overpassStatusElement.append(overpassStatusMessage, overpassRetryButton);
+    map.getViewport().append(overpassStatusElement);
 
     const abortActiveOverpassRequest = function() {
         if (activeOverpassRequestController) {
@@ -474,8 +487,15 @@ export function createPoiLayer(options) {
 
     const reloadPOIs = function() {
         abortActiveOverpassRequest();
+        clearTimeout(overpassRetryTimer);
+        overpassRetryTimer = null;
         const requestController = new AbortController();
         activeOverpassRequestController = requestController;
+        overpassStatusMessage.textContent = 'Loading opening-hours data...';
+        overpassRetryButton.disabled = false;
+        overpassRetryButton.textContent = 'Retry';
+        overpassRetryButton.hidden = true;
+        overpassStatusElement.hidden = false;
 
         updateKeyValues();
 
@@ -518,6 +538,7 @@ export function createPoiLayer(options) {
                     return;
                 }
                 activeOverpassRequestController = null;
+                overpassStatusElement.hidden = true;
                 applyLoadedPoiData(result);
             })
             .catch(error => {
@@ -528,9 +549,24 @@ export function createPoiLayer(options) {
                     return;
                 }
                 const failure = formatOverpassFailure(error);
+                overpassStatusMessage.textContent = 'Sorry, we could not load the opening-hours data. Please try again shortly.';
+                const retryAfterSeconds = failure.retryAfterSeconds || 0;
+                if (retryAfterSeconds > 0) {
+                    overpassRetryButton.disabled = true;
+                    overpassRetryButton.textContent = `Retry in ${retryAfterSeconds}s`;
+                    overpassRetryTimer = setTimeout(() => {
+                        overpassRetryTimer = null;
+                        overpassRetryButton.disabled = false;
+                        overpassRetryButton.textContent = 'Retry';
+                    }, retryAfterSeconds * 1000);
+                }
+                overpassRetryButton.hidden = false;
+                overpassStatusElement.hidden = false;
                 logger.overpassFailure(failure);
             });
     };
+
+    overpassRetryButton.addEventListener('click', reloadPOIs);
 
     const redrawPOIs = function() {
         vectorSource.clear();

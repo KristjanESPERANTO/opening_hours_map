@@ -228,12 +228,14 @@ export async function fetchOverpassJsonWithFallback(overpassQl, options = {}) {
 export function formatOverpassFailure(error) {
     const raw = String(error?.message || error || 'unknown error');
     const lower = raw.toLowerCase();
+    const cooldownMatch = raw.match(/cooldown(?: active for)?\s+(\d+)s/i);
 
     if (lower.includes('cooldown')) {
         return {
             severity: 'warn',
             message: 'Overpass API: temporary cooldown active after failures',
             detail: raw,
+            retryAfterSeconds: cooldownMatch ? Number(cooldownMatch[1]) : undefined,
         };
     }
 

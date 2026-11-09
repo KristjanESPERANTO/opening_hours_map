@@ -21,9 +21,53 @@ html, body {
 }
 
 #map {
+    position: relative;
     background: gray;
     height:100%;
     width:100%;
+}
+
+.overpass-status {
+    position: absolute;
+    z-index: 1000;
+    top: 1rem;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: min(32rem, calc(100% - 2rem));
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    transform: translateX(-50%);
+    border: 1px solid #8a6d00;
+    border-radius: 4px;
+    background: #fff8db;
+    color: #332800;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.overpass-status[hidden] {
+    display: none;
+}
+
+.overpass-status button {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid #6b5600;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #332800;
+    cursor: pointer;
+}
+
+.overpass-status button:hover {
+    background: #f2e7b5;
+}
+
+.overpass-status button:disabled {
+    cursor: wait;
+    opacity: 0.7;
 }
 
 /* Dark mode */
@@ -35,6 +79,22 @@ html:has(body[data-theme="dark"]) {
 
 body[data-theme="dark"] #map {
     background: #2d2d2d;
+}
+
+body[data-theme="dark"] .overpass-status {
+    border-color: #b9a44c;
+    background: #302d20;
+    color: #f4edcf;
+}
+
+body[data-theme="dark"] .overpass-status button {
+    border-color: #b9a44c;
+    background: #45402b;
+    color: #f4edcf;
+}
+
+body[data-theme="dark"] .overpass-status button:hover {
+    background: #565033;
 }
 
 body[data-theme="dark"] #header h1 {
